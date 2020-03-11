@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+
+  server:
+    image: edittapi
+    container_name: "edittapi"
+    build: ./
+    command: ./app
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongodb
+#      - localstack
+
+  mongodb:
+    image: mongo:latest
+    container_name: "mongo"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGODB_DATABASE=editt
+    volumes:
+      - ./.data/db:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --logpath=/dev/null # --quiet
+
+
+#  localstack:
+#    image: localstack/localstack
+#    environment:
+#      - SERVICES=s3,sqs,ses,sns,dynamodb
+#      - DEFAULT_REGION=us-east-1
+#      - DEBUG=1
+#    ports:
+#      - "4572:4572"
+#      - "4569:4569"
+#      - "8080:8080"
