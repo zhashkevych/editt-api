@@ -3,6 +3,7 @@ package mongo
 import (
 	"context"
 	"edittapi/models"
+	"edittapi/publication"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -122,15 +123,19 @@ func (r PublicationRepository) GetLatest(ctx context.Context, limit int64) ([]*m
 func (r PublicationRepository) GetById(ctx context.Context, id string) (*models.Publication, error) {
 	pid, _ := primitive.ObjectIDFromHex(id)
 
-	var publication models.Publication
+	var p models.Publication
 
-	err := r.db.FindOne(ctx, bson.M{"_id": pid}).Decode(&publication)
-	if err != nil {
-		log.Errorf("Publication Repo: error occured while finding publication by id: %s", err.Error())
-		return nil, err
+	res := r.db.FindOne(ctx, bson.M{"_id": pid})
+	if res.Err() != nil {
+		if res.Err() == mongo.ErrNoDocuments {
+			return nil, publication.ErrNoPublication
+		}
+
+		log.Errorf("Publication Repo: error occured while finding p by id: %s", res.Err().Error())
+		return nil, res.Err()
 	}
 
-	return &publication, nil
+	return &p, nil
 }
 
 func toPublication(p models.Publication) *Publication {

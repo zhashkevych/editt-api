@@ -113,8 +113,13 @@ func (h *Handler) GetById(c *gin.Context) {
 
 	p, err := h.useCase.GetById(c.Request.Context(), id)
 	if err != nil {
-		log.Errorf("failed to parse 'limit' query parameter: %s", err.Error())
-		c.AbortWithStatus(http.StatusBadRequest)
+		if err == publication.ErrNoPublication {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		log.Errorf("error occured while getting publication by id: %s", err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
