@@ -6,24 +6,24 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type BookmarkUseCaseMock struct {
+type PublicationUseCaseMock struct {
 	mock.Mock
 }
 
-func (m BookmarkUseCaseMock) CreateBookmark(ctx context.Context, user *models.User, url, title string) error {
-	args := m.Called(user, url, title)
+func (p PublicationUseCaseMock) Publish(ctx context.Context, publication models.Publication) error {
+	args := p.Called(publication)
 
 	return args.Error(0)
 }
 
-func (m BookmarkUseCaseMock) GetBookmarks(ctx context.Context, user *models.User) ([]*models.Bookmark, error) {
-	args := m.Called(user)
+func (p PublicationUseCaseMock) GetPopularPublications(ctx context.Context) ([]*models.Publication, error) {
+	args := p.Called(ctx)
 
-	return args.Get(0).([]*models.Bookmark), args.Error(1)
+	return args.Get(0).([]*models.Publication), args.Error(1)
 }
 
-func (m BookmarkUseCaseMock) DeleteBookmark(ctx context.Context, user *models.User, id string) error {
-	args := m.Called(user, id)
+func (p PublicationUseCaseMock) GetLatestPublications(ctx context.Context) ([]*models.Publication, error) {
+	args := p.Called(ctx)
 
-	return args.Error(0)
+	return args.Get(0).([]*models.Publication), args.Error(1)
 }
