@@ -6,24 +6,24 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type BookmarkStorageMock struct {
+type PublicationRepoMock struct {
 	mock.Mock
 }
 
-func (s *BookmarkStorageMock) CreateBookmark(ctx context.Context, user *models.User, bm *models.Bookmark) error {
-	args := s.Called(user, bm)
+func (r *PublicationRepoMock) Create(ctx context.Context, publication models.Publication) error {
+	args := r.Called(publication)
 
 	return args.Error(0)
 }
 
-func (s *BookmarkStorageMock) GetBookmarks(ctx context.Context, user *models.User) ([]*models.Bookmark, error) {
-	args := s.Called(user)
+func (r *PublicationRepoMock) GetPopular(ctx context.Context, limit int64) ([]*models.Publication, error) {
+	args := r.Called(limit)
 
-	return args.Get(0).([]*models.Bookmark), args.Error(1)
+	return args.Get(0).([]*models.Publication), args.Error(1)
 }
 
-func (s *BookmarkStorageMock) DeleteBookmark(ctx context.Context, user *models.User, id string) error {
-	args := s.Called(user, id)
+func (r *PublicationRepoMock) GetLatest(ctx context.Context, limit int64) ([]*models.Publication, error) {
+	args := r.Called(limit)
 
-	return args.Error(0)
+	return args.Get(0).([]*models.Publication), args.Error(1)
 }
