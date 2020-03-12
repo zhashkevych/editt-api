@@ -27,3 +27,9 @@ func (p *PublicationUseCaseMock) GetLatestPublications(ctx context.Context, limi
 
 	return args.Get(0).([]*models.Publication), args.Error(1)
 }
+
+func (p *PublicationUseCaseMock) GetPublication(ctx context.Context, id string) (*models.Publication, error) {
+	args := p.Called(id)
+
+	return args.Get(0).(*models.Publication), args.Error(1)
+}

@@ -27,3 +27,9 @@ func (r *PublicationRepoMock) GetLatest(ctx context.Context, limit int64) ([]*mo
 
 	return args.Get(0).([]*models.Publication), args.Error(1)
 }
+
+func (r *PublicationRepoMock) GetById(ctx context.Context, id string) (*models.Publication, error) {
+	args := r.Called(id)
+
+	return args.Get(0).(*models.Publication), args.Error(1)
+}

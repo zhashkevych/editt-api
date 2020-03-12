@@ -119,6 +119,20 @@ func (r PublicationRepository) GetLatest(ctx context.Context, limit int64) ([]*m
 	return toModels(publications), nil
 }
 
+func (r PublicationRepository) GetById(ctx context.Context, id string) (*models.Publication, error) {
+	pid, _ := primitive.ObjectIDFromHex(id)
+
+	var publication models.Publication
+
+	err := r.db.FindOne(ctx, bson.M{"_id": pid}).Decode(&publication)
+	if err != nil {
+		log.Errorf("Publication Repo: error occured while finding publication by id: %s", err.Error())
+		return nil, err
+	}
+
+	return &publication, nil
+}
+
 func toPublication(p models.Publication) *Publication {
 	return &Publication{
 		Author:      p.Author,
