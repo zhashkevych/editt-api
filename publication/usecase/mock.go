@@ -16,14 +16,14 @@ func (p PublicationUseCaseMock) Publish(ctx context.Context, publication models.
 	return args.Error(0)
 }
 
-func (p PublicationUseCaseMock) GetPopularPublications(ctx context.Context) ([]*models.Publication, error) {
-	args := p.Called(ctx)
+func (p PublicationUseCaseMock) GetPopularPublications(ctx context.Context, limit int64) ([]*models.Publication, error) {
+	args := p.Called(limit)
 
 	return args.Get(0).([]*models.Publication), args.Error(1)
 }
 
-func (p PublicationUseCaseMock) GetLatestPublications(ctx context.Context) ([]*models.Publication, error) {
-	args := p.Called(ctx)
+func (p PublicationUseCaseMock) GetLatestPublications(ctx context.Context, limit int64) ([]*models.Publication, error) {
+	args := p.Called(limit)
 
 	return args.Get(0).([]*models.Publication), args.Error(1)
 }

@@ -20,10 +20,10 @@ func (p PublicationUseCase) Publish(ctx context.Context, publication models.Publ
 	return p.repo.Create(ctx, publication)
 }
 
-func (p PublicationUseCase) GetPopularPublications(ctx context.Context) ([]*models.Publication, error) {
-	return p.repo.GetPopular(ctx)
+func (p PublicationUseCase) GetPopularPublications(ctx context.Context, limit int64) ([]*models.Publication, error) {
+	return p.repo.GetPopular(ctx, limit)
 }
 
-func (p PublicationUseCase) GetLatestPublications(ctx context.Context) ([]*models.Publication, error) {
-	return p.repo.GetLatest(ctx)
+func (p PublicationUseCase) GetLatestPublications(ctx context.Context, limit int64) ([]*models.Publication, error) {
+	return p.repo.GetLatest(ctx, limit)
 }
