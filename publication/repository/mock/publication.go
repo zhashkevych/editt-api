@@ -33,3 +33,15 @@ func (r *PublicationRepoMock) GetById(ctx context.Context, id string) (*models.P
 
 	return args.Get(0).(*models.Publication), args.Error(1)
 }
+
+func (r *PublicationRepoMock) IncrementClaps(ctx context.Context, id string) error {
+	args := r.Called(id)
+
+	return args.Error(0)
+}
+
+func (r *PublicationRepoMock) IncrementViews(ctx context.Context, id string) error {
+	args := r.Called(id)
+
+	return args.Error(0)
+}

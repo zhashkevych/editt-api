@@ -123,7 +123,7 @@ func (r PublicationRepository) GetLatest(ctx context.Context, limit int64) ([]*m
 func (r PublicationRepository) GetById(ctx context.Context, id string) (*models.Publication, error) {
 	pid, _ := primitive.ObjectIDFromHex(id)
 
-	var p models.Publication
+	var p Publication
 
 	res := r.db.FindOne(ctx, bson.M{"_id": pid})
 	if res.Err() != nil {
@@ -135,7 +135,26 @@ func (r PublicationRepository) GetById(ctx context.Context, id string) (*models.
 		return nil, res.Err()
 	}
 
-	return &p, nil
+	if err := res.Decode(&p); err != nil {
+		log.Errorf("Publication Repo: error occured while decoding publication: %s", res.Err().Error())
+		return nil, err
+	}
+
+	return toModel(&p), nil
+}
+
+func (r PublicationRepository) IncrementClaps(ctx context.Context, id string) error {
+	pid, _ := primitive.ObjectIDFromHex(id)
+	_, err := r.db.UpdateOne(ctx, bson.M{"_id": pid}, bson.M{"$inc": bson.M{"claps": 1}})
+
+	return err
+}
+
+func (r PublicationRepository) IncrementViews(ctx context.Context, id string) error {
+	pid, _ := primitive.ObjectIDFromHex(id)
+	_, err := r.db.UpdateOne(ctx, bson.M{"_id": pid}, bson.M{"$inc": bson.M{"views": 1}})
+
+	return err
 }
 
 func toPublication(p models.Publication) *Publication {
@@ -153,6 +172,7 @@ func toPublication(p models.Publication) *Publication {
 
 func toModel(p *Publication) *models.Publication {
 	return &models.Publication{
+		ID:          p.ID.Hex(),
 		Author:      p.Author,
 		Tags:        p.Tags,
 		Body:        p.Body,

@@ -82,7 +82,7 @@ func TestPublish(t *testing.T) {
 		uc.On("Publish", p).Return(nil)
 
 		w := httptest.NewRecorder()
-		req, _ := http.NewRequest("POST", "/api/publication", bytes.NewBuffer(body))
+		req, _ := http.NewRequest("POST", "/api/publications", bytes.NewBuffer(body))
 		r.ServeHTTP(w, req)
 
 		assert.Equal(t, test.StatusCode, w.Code)
@@ -222,7 +222,7 @@ func TestGetById(t *testing.T) {
 	uc.On("GetById", "5e6a03309ea43ef775bd247e").Return(p, nil)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/api/publication/5e6a03309ea43ef775bd247e", nil)
+	req, _ := http.NewRequest("GET", "/api/publications/5e6a03309ea43ef775bd247e", nil)
 	r.ServeHTTP(w, req)
 
 	expectedResponse, _ := json.Marshal(toPublication(p))

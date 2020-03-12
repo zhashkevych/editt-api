@@ -7,7 +7,11 @@ import (
 
 type Repository interface {
 	Create(ctx context.Context, publication models.Publication) error
+
 	GetPopular(ctx context.Context, limit int64) ([]*models.Publication, error)
 	GetLatest(ctx context.Context, limit int64) ([]*models.Publication, error)
 	GetById(ctx context.Context, id string) (*models.Publication, error)
+
+	IncrementClaps(ctx context.Context, id string) error
+	IncrementViews(ctx context.Context, id string) error
 }

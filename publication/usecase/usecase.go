@@ -18,7 +18,8 @@ type PublicationUseCase struct {
 
 func NewPublicationUseCase(repo publication.Repository) *PublicationUseCase {
 	return &PublicationUseCase{
-		repo: repo,
+		repo:   repo,
+		policy: bluemonday.UGCPolicy(),
 	}
 }
 
@@ -40,6 +41,14 @@ func (p PublicationUseCase) GetLatestPublications(ctx context.Context, limit int
 
 func (p PublicationUseCase) GetById(ctx context.Context, id string) (*models.Publication, error) {
 	return p.repo.GetById(ctx, id)
+}
+
+func (p PublicationUseCase) IncrementClaps(ctx context.Context, id string) error {
+	return p.repo.IncrementClaps(ctx, id)
+}
+
+func (p PublicationUseCase) IncrementViews(ctx context.Context, id string) error {
+	return p.repo.IncrementViews(ctx, id)
 }
 
 func estimateReadingTime(text string) int32 {

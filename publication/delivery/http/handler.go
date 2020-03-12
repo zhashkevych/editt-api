@@ -44,6 +44,7 @@ func toPublicationModel(inp *publishInput) models.Publication {
 func (h *Handler) Publish(c *gin.Context) {
 	inp := new(publishInput)
 	if err := c.BindJSON(inp); err != nil {
+		log.Errorf("failed to bind publication: %s", err.Error())
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -65,6 +66,7 @@ type publicationResponse struct {
 	Body        string    `json:"body"`
 	ImageLink   string    `json:"imageLink"`
 	Claps       int32     `json:"claps"`
+	Views       int32     `json:"views"`
 	ReadingTime int32     `json:"readingTime"`
 	PublishedAt time.Time `json:"publishedAt"`
 }
@@ -132,6 +134,7 @@ func toPublication(p *models.Publication) *publicationResponse {
 		Body:        p.Body,
 		ImageLink:   p.ImageLink,
 		Claps:       p.Claps,
+		Views:       p.Views,
 		ReadingTime: p.ReadingTime,
 		PublishedAt: p.PublishedAt,
 	}
