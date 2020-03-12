@@ -8,11 +8,10 @@ import (
 func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase publication.UseCase) {
 	h := NewHandler(usecase)
 
-	bookmarks := router.Group("/publication")
+	bookmarks := router.Group("/publications")
 	{
 		bookmarks.POST("", h.Publish)
-		bookmarks.GET("/popular", h.GetPopular)
-		bookmarks.GET("/latest", h.GetLatest)
-		bookmarks.GET(":id", h.GetById)
+		bookmarks.GET("", h.GetPublications)
+		bookmarks.GET("/:id", h.GetById)
 	}
 }

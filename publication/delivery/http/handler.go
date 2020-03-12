@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+const (
+	publicationTypePopular = "popular"
+	publicationTypeLatest  = "latest"
+)
+
 type Handler struct {
 	useCase publication.UseCase
 }
@@ -68,8 +73,10 @@ type getPublicationsResponse struct {
 	Publications []*publicationResponse `json:"publications"`
 }
 
-func (h *Handler) GetPopular(c *gin.Context) {
+func (h *Handler) GetPublications(c *gin.Context) {
 	limit := c.DefaultQuery("limit", "3")
+	tpe := c.DefaultQuery("type", publicationTypePopular)
+
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
 		log.Errorf("failed to parse 'limit' query parameter: %s", err.Error())
@@ -77,30 +84,21 @@ func (h *Handler) GetPopular(c *gin.Context) {
 		return
 	}
 
-	ps, err := h.useCase.GetPopularPublications(c.Request.Context(), int64(limitInt))
-	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
+	var ps []*models.Publication
 
-	c.JSON(http.StatusOK, &getPublicationsResponse{
-		Publications: toPublications(ps),
-	})
-}
-
-func (h *Handler) GetLatest(c *gin.Context) {
-	limit := c.DefaultQuery("limit", "3")
-	limitInt, err := strconv.Atoi(limit)
-	if err != nil {
-		log.Errorf("failed to parse 'limit' query parameter: %s", err.Error())
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-
-	ps, err := h.useCase.GetLatestPublications(c.Request.Context(), int64(limitInt))
-	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
+	switch tpe {
+	case publicationTypeLatest:
+		ps, err = h.useCase.GetLatestPublications(c.Request.Context(), int64(limitInt))
+		if err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+	default:
+		ps, err = h.useCase.GetPopularPublications(c.Request.Context(), int64(limitInt))
+		if err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, &getPublicationsResponse{
