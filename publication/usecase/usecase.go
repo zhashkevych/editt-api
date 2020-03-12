@@ -2,33 +2,28 @@ package usecase
 
 import (
 	"context"
-	"edittapi/bookmark"
 	"edittapi/models"
+	"edittapi/publication"
 )
 
-type BookmarkUseCase struct {
-	bookmarkRepo bookmark.Repository
+type PublicationUseCase struct {
+	repo publication.Repository
 }
 
-func NewBookmarkUseCase(bookmarkRepo bookmark.Repository) *BookmarkUseCase {
-	return &BookmarkUseCase{
-		bookmarkRepo: bookmarkRepo,
+func NewPublicationUseCase(repo publication.Repository) *PublicationUseCase {
+	return &PublicationUseCase{
+		repo: repo,
 	}
 }
 
-func (b BookmarkUseCase) CreateBookmark(ctx context.Context, user *models.User, url, title string) error {
-	bm := &models.Bookmark{
-		URL:   url,
-		Title: title,
-	}
-
-	return b.bookmarkRepo.CreateBookmark(ctx, user, bm)
+func (p PublicationUseCase) Publish(ctx context.Context, publication models.Publication) error {
+	return p.repo.Create(ctx, publication)
 }
 
-func (b BookmarkUseCase) GetBookmarks(ctx context.Context, user *models.User) ([]*models.Bookmark, error) {
-	return b.bookmarkRepo.GetBookmarks(ctx, user)
+func (p PublicationUseCase) GetPopularPublications(ctx context.Context) ([]*models.Publication, error) {
+	return p.repo.GetPopular(ctx)
 }
 
-func (b BookmarkUseCase) DeleteBookmark(ctx context.Context, user *models.User, id string) error {
-	return b.bookmarkRepo.DeleteBookmark(ctx, user, id)
+func (p PublicationUseCase) GetLatestPublications(ctx context.Context) ([]*models.Publication, error) {
+	return p.repo.GetLatest(ctx)
 }

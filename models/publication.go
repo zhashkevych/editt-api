@@ -4,11 +4,11 @@ import "time"
 
 type Publication struct {
 	ID          string
-	Author 		*Profile
-	S3Link      string
-	ViewsCount  int32
-	Likes       []*Like
-	Comments    []*Comment
-	PublishedAt time.Time
+	Author      string
 	Tags        []string
+	Body        string
+	ImageLink   string
+	Views       int32
+	Claps       int32
+	PublishedAt time.Time
 }
