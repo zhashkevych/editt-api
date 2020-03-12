@@ -21,10 +21,10 @@ func NewHandler(useCase publication.UseCase) *Handler {
 }
 
 type publishInput struct {
-	Author    string   `json:"author"`
-	Tags      []string `json:"tags"`
-	Body      string   `json:"body"`
-	ImageLink string   `json:"imageLink"`
+	Author    string   `json:"author" binding:"required,min=3,max=25"`
+	Tags      []string `json:"tags" binding:"required,min=1,max=3"`
+	Body      string   `json:"body" binding:"required"`
+	ImageLink string   `json:"imageLink" binding:"required"`
 }
 
 func toPublicationModel(inp *publishInput) models.Publication {
