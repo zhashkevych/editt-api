@@ -1,12 +1,6 @@
 port: 8000
 
-auth:
-  hash_salt: "hash_salt"
-  signing_key: "signing_key"
-  token_ttl: 86400
-
 mongo:
   uri: "mongodb://mongo:27017"
   name: "editt"
-  user_collection: "users"
-  profile_collection: "profiles"
+  publications_collection: "publications"

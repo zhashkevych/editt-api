@@ -16,19 +16,25 @@ import (
 	"time"
 
 	"edittapi/publication"
+	pubuc "edittapi/publication/usecase"
+	pubmongo "edittapi/publication/repository/mongo"
+	pubhttp "edittapi/publication/delivery/http"
 )
 
 type App struct {
 	httpServer *http.Server
 
-	publicationUC publication.PublicationUseCase
+	publicationUseCase publication.UseCase
 }
 
 func NewApp() *App {
 	db := initDB()
 
-	return &App{
+	publicationRepo := pubmongo.NewPublicationRepository(db, viper.GetString("mongo.publications_collection"))
+	publicationUseCase := pubuc.NewPublicationUseCase(publicationRepo)
 
+	return &App{
+		publicationUseCase: publicationUseCase,
 	}
 }
 
@@ -42,6 +48,7 @@ func (a *App) Run(port string) error {
 
 	// API endpoints
 	api := router.Group("/api")
+	pubhttp.RegisterHTTPEndpoints(api, a.publicationUseCase)
 
 	// HTTP Server
 	a.httpServer = &http.Server{
