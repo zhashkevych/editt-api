@@ -52,13 +52,13 @@ func (r PublicationRepository) GetPopular(ctx context.Context, limit int64) ([]*
 
 	var publications []*Publication
 
-	cur, err := r.db.Find(context.TODO(), bson.D{{}}, opts)
+	cur, err := r.db.Find(ctx, bson.D{{}}, opts)
 	if err != nil {
 		log.Errorf("Publication Repo: error occured while finding popular publications: %s", err.Error())
 		return nil, err
 	}
 
-	for cur.Next(context.TODO()) {
+	for cur.Next(ctx) {
 		var elem Publication
 		err := cur.Decode(&elem)
 		if err != nil {
@@ -89,13 +89,13 @@ func (r PublicationRepository) GetLatest(ctx context.Context, limit int64) ([]*m
 
 	var publications []*Publication
 
-	cur, err := r.db.Find(context.TODO(), bson.D{{}}, opts)
+	cur, err := r.db.Find(ctx, bson.D{{}}, opts)
 	if err != nil {
 		log.Errorf("Publication Repo: error occured while finding latest publications: %s", err.Error())
 		return nil, err
 	}
 
-	for cur.Next(context.TODO()) {
+	for cur.Next(ctx) {
 		var elem Publication
 		err := cur.Decode(&elem)
 		if err != nil {
