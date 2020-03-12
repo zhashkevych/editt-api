@@ -5,15 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterHTTPEndpoints(router *gin.RouterGroup, puc publication.PublicationUseCase,
-	cuc publication.CommentUseCase, luc publication.LikeUseCase) {
-	h := NewHandler(puc, cuc, luc)
+func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase publication.UseCase) {
+	h := NewHandler(usecase)
 
-	bookmarks := router.Group("/publication/")
+	bookmarks := router.Group("/publication")
 	{
 		bookmarks.POST("", h.Publish)
-		bookmarks.GET(":id", h.Get)
-		bookmarks.DELETE("", h.Delete)
-		bookmarks.PATCH(":id", h.Update)
+		bookmarks.GET("/popular", h.GetPopular)
+		bookmarks.GET("/latest", h.GetLatest)
 	}
 }

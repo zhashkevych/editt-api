@@ -12,15 +12,15 @@ import (
 )
 
 type Publication struct {
-	ID              primitive.ObjectID `bson:"_id,omitempty"`
-	Author          string             `bson:"author"`
-	Tags            []string           `bson:"tags"`
-	Body            string             `bson:"body"`
-	ImageLink       string             `bson:"imageLink"`
-	Views           int32              `bson:"views"`
-	Claps           int32              `bson:"claps"`
-	ReadTimeMinutes int32              `bson:"readTime"`
-	PublishedAt     time.Time          `bson:"publishedAt"`
+	ID          primitive.ObjectID `bson:"_id,omitempty"`
+	Author      string             `bson:"author"`
+	Tags        []string           `bson:"tags"`
+	Body        string             `bson:"body"`
+	ImageLink   string             `bson:"imageLink"`
+	Views       int32              `bson:"views"`
+	Claps       int32              `bson:"claps"`
+	ReadingTime int32              `bson:"readingTime"`
+	PublishedAt time.Time          `bson:"publishedAt"`
 }
 
 type PublicationRepository struct {
@@ -121,27 +121,27 @@ func (r PublicationRepository) GetLatest(ctx context.Context, limit int64) ([]*m
 
 func toPublication(p models.Publication) *Publication {
 	return &Publication{
-		Author:          p.Author,
-		Tags:            p.Tags,
-		Body:            p.Body,
-		ImageLink:       p.ImageLink,
-		Views:           p.Views,
-		Claps:           p.Claps,
-		ReadTimeMinutes: p.ReadTimeMinutes,
-		PublishedAt:     p.PublishedAt,
+		Author:      p.Author,
+		Tags:        p.Tags,
+		Body:        p.Body,
+		ImageLink:   p.ImageLink,
+		Views:       p.Views,
+		Claps:       p.Claps,
+		ReadingTime: p.ReadingTime,
+		PublishedAt: p.PublishedAt,
 	}
 }
 
 func toModel(p *Publication) *models.Publication {
 	return &models.Publication{
-		Author:          p.Author,
-		Tags:            p.Tags,
-		Body:            p.Body,
-		ImageLink:       p.ImageLink,
-		Views:           p.Views,
-		Claps:           p.Claps,
-		ReadTimeMinutes: p.ReadTimeMinutes,
-		PublishedAt:     p.PublishedAt,
+		Author:      p.Author,
+		Tags:        p.Tags,
+		Body:        p.Body,
+		ImageLink:   p.ImageLink,
+		Views:       p.Views,
+		Claps:       p.Claps,
+		ReadingTime: p.ReadingTime,
+		PublishedAt: p.PublishedAt,
 	}
 }
 
