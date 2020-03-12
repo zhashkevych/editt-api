@@ -126,6 +126,30 @@ func (h *Handler) GetById(c *gin.Context) {
 	c.JSON(http.StatusOK, toPublication(p))
 }
 
+func (h *Handler) IncrementViews(c *gin.Context) {
+	id := c.Param("id")
+
+	if err := h.useCase.IncrementViews(c.Request.Context(), id); err != nil {
+		log.Errorf("error occured while increasing views: %s", err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
+}
+
+func (h *Handler) IncrementClaps(c *gin.Context) {
+	id := c.Param("id")
+
+	if err := h.useCase.IncrementClaps(c.Request.Context(), id); err != nil {
+		log.Errorf("error occured while increasing views: %s", err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, nil)
+}
+
 func toPublication(p *models.Publication) *publicationResponse {
 	return &publicationResponse{
 		ID:          p.ID,
