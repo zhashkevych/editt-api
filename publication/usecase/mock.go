@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"github.com/stretchr/testify/mock"
 	"edittapi/models"
+	"github.com/stretchr/testify/mock"
 )
 
 type BookmarkUseCaseMock struct {

@@ -1,7 +1,7 @@
 package http
 
 import (
-	"edittapi/application/publication"
+	"edittapi/publication"
 	"github.com/gin-gonic/gin"
 )
 

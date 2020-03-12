@@ -2,12 +2,12 @@ package http
 
 import (
 	"bytes"
-	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
 	"edittapi/auth"
 	"edittapi/bookmark/usecase"
 	"edittapi/models"
+	"encoding/json"
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"

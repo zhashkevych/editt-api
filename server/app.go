@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"edittapi/application/profile/usecase"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -16,50 +15,20 @@ import (
 	"os/signal"
 	"time"
 
-	"edittapi/auth"
-
-	authhttp "edittapi/auth/delivery/http"
-	authmongo "edittapi/auth/repository/mongo"
-	authusecase "edittapi/auth/usecase"
-
-	profilemongo "edittapi/application/profile/repository/mongo"
-	profilehttp "edittapi/application/profile/delivery/http"
-
-	"edittapi/application/feed"
-	"edittapi/application/profile"
-	"edittapi/application/publication"
+	"edittapi/publication"
 )
 
 type App struct {
 	httpServer *http.Server
 
-	authUC auth.UseCase
-
-	profileUC     profile.UseCase
 	publicationUC publication.PublicationUseCase
-	commentUC     publication.CommentUseCase
-	likeUC        publication.LikeUseCase
-	feedUC        feed.UseCase
 }
 
 func NewApp() *App {
 	db := initDB()
 
-	userRepo := authmongo.NewUserRepository(db, viper.GetString("mongo.user_collection"))
-	profileRepo := profilemongo.NewProfileRepository(db, viper.GetString("mongo.profile_collection"))
-
-	profileUC := usecase.NewProfileUseCase(profileRepo)
-	authUC := authusecase.NewAuthUseCase(
-		userRepo,
-		profileUC,
-		viper.GetString("auth.hash_salt"),
-		[]byte(viper.GetString("auth.signing_key")),
-		viper.GetDuration("auth.token_ttl"),
-	)
-
 	return &App{
-		profileUC: profileUC,
-		authUC:    authUC,
+
 	}
 }
 
@@ -71,15 +40,8 @@ func (a *App) Run(port string) error {
 		gin.Logger(),
 	)
 
-	// Set up http handlers
-	// SignUp/SignIn endpoints
-	authhttp.RegisterHTTPEndpoints(router, a.authUC)
-
 	// API endpoints
-	authMiddleware := authhttp.NewAuthMiddleware(a.authUC)
-	api := router.Group("/api", authMiddleware)
-
-	profilehttp.RegisterHTTPEndpoints(api, a.profileUC)
+	api := router.Group("/api")
 
 	// HTTP Server
 	a.httpServer = &http.Server{

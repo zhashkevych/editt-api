@@ -2,8 +2,8 @@ package mock
 
 import (
 	"context"
-	"github.com/stretchr/testify/mock"
 	"edittapi/models"
+	"github.com/stretchr/testify/mock"
 )
 
 type BookmarkStorageMock struct {

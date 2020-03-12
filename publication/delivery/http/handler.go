@@ -1,10 +1,10 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
 	"edittapi/auth"
 	"edittapi/bookmark"
 	"edittapi/models"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 

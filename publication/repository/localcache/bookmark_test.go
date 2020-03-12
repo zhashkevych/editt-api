@@ -2,10 +2,10 @@ package localcache
 
 import (
 	"context"
-	"fmt"
-	"github.com/stretchr/testify/assert"
 	"edittapi/bookmark"
 	"edittapi/models"
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
