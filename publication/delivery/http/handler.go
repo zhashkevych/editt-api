@@ -54,6 +54,7 @@ func (h *Handler) Publish(c *gin.Context) {
 }
 
 type publicationResponse struct {
+	ID          string    `json:"id"`
 	Author      string    `json:"author"`
 	Tags        []string  `json:"tags"`
 	Body        string    `json:"body"`
@@ -107,8 +108,22 @@ func (h *Handler) GetLatest(c *gin.Context) {
 	})
 }
 
+func (h *Handler) GetById(c *gin.Context) {
+	id := c.Param("id")
+
+	p, err := h.useCase.GetById(c.Request.Context(), id)
+	if err != nil {
+		log.Errorf("failed to parse 'limit' query parameter: %s", err.Error())
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	c.JSON(http.StatusOK, toPublication(p))
+}
+
 func toPublication(p *models.Publication) *publicationResponse {
 	return &publicationResponse{
+		ID:          p.ID,
 		Author:      p.Author,
 		Tags:        p.Tags,
 		Body:        p.Body,

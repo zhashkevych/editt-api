@@ -13,5 +13,6 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase publication.UseCase)
 		bookmarks.POST("", h.Publish)
 		bookmarks.GET("/popular", h.GetPopular)
 		bookmarks.GET("/latest", h.GetLatest)
+		bookmarks.GET(":id", h.GetById)
 	}
 }

@@ -38,7 +38,7 @@ func (p PublicationUseCase) GetLatestPublications(ctx context.Context, limit int
 	return p.repo.GetLatest(ctx, limit)
 }
 
-func (p PublicationUseCase) GetPublication(ctx context.Context, id string) (*models.Publication, error) {
+func (p PublicationUseCase) GetById(ctx context.Context, id string) (*models.Publication, error) {
 	return p.repo.GetById(ctx, id)
 }
 
