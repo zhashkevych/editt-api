@@ -2,9 +2,8 @@ package http
 
 import (
 	"bytes"
-	"edittapi/auth"
-	"edittapi/bookmark/usecase"
 	"edittapi/models"
+	"edittapi/publication/usecase"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -13,104 +12,121 @@ import (
 	"testing"
 )
 
-func TestCreate(t *testing.T) {
-	testUser := &models.User{
-		Username: "testuser",
-		Password: "testpass",
-	}
-
-	r := gin.Default()
-	group := r.Group("/api", func(c *gin.Context) {
-		c.Set(auth.CtxUserKey, testUser)
-	})
-
-	uc := new(usecase.BookmarkUseCaseMock)
-
-	RegisterHTTPEndpoints(group, uc)
-
-	inp := &createInput{
-		URL:   "testurl",
-		Title: "testtitle",
-	}
-
-	body, err := json.Marshal(inp)
-	assert.NoError(t, err)
-
-	uc.On("CreateBookmark", testUser, inp.URL, inp.Title).Return(nil)
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/api/bookmarks", bytes.NewBuffer(body))
-	r.ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
+type publishTest struct {
+	input *publishInput
+	StatusCode int
 }
 
-func TestGet(t *testing.T) {
-	testUser := &models.User{
-		Username: "testuser",
-		Password: "testpass",
-	}
-
+func TestPublish(t *testing.T) {
 	r := gin.Default()
-	group := r.Group("/api", func(c *gin.Context) {
-		c.Set(auth.CtxUserKey, testUser)
-	})
+	group := r.Group("/api")
 
-	uc := new(usecase.BookmarkUseCaseMock)
+	uc := new(usecase.PublicationUseCaseMock)
 
 	RegisterHTTPEndpoints(group, uc)
 
-	bms := make([]*models.Bookmark, 5)
-	for i := 0; i < 5; i++ {
-		bms[i] = &models.Bookmark{
-			ID:    "id",
-			URL:   "url",
-			Title: "title",
-		}
+	tests := []*publishTest{
+		{ // Ok
+			input: &publishInput{
+				Author: "Maksim Zhashkevych",
+				Tags: []string{"мінімалізм", "лайфстайл"},
+				Body: "крута стаття",
+				ImageLink: "https://link-to.image",
+			},
+			StatusCode: 200,
+		},
+		{ // Author name too long
+			input: &publishInput{
+				Author: "Maksim Zhashkevych asfaskfkasjfkassaf sf",
+				Tags: []string{"мінімалізм", "лайфстайл"},
+				Body: "крута стаття",
+				ImageLink: "https://link-to.image",
+			},
+			StatusCode: 400,
+		},
+		{ // Author name too short
+			input: &publishInput{
+				Author: "Ma",
+				Tags: []string{"мінімалізм", "лайфстайл"},
+				Body: "крута стаття",
+				ImageLink: "https://link-to.image",
+			},
+			StatusCode: 400,
+		},
+		{ // No tags
+			input: &publishInput{
+				Author: "Maksim",
+				Tags: []string{},
+				Body: "крута стаття",
+				ImageLink: "https://link-to.image",
+			},
+			StatusCode: 400,
+		},
+		{ // Too much tags
+			input: &publishInput{
+				Author: "Maksim",
+				Tags: []string{"1", "2", "3", "4"},
+				Body: "крута стаття",
+				ImageLink: "https://link-to.image",
+			},
+			StatusCode: 400,
+		},
 	}
 
-	uc.On("GetBookmarks", testUser).Return(bms, nil)
+	for _, test := range tests {
+		body, err := json.Marshal(test.input)
+		assert.NoError(t, err)
 
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/api/bookmarks", nil)
-	r.ServeHTTP(w, req)
+		p := toPublicationModel(test.input)
 
-	expectedOut := &getResponse{Bookmarks: toBookmarks(bms)}
+		uc.On("Publish", p).Return(nil)
 
-	expectedOutBody, err := json.Marshal(expectedOut)
-	assert.NoError(t, err)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/api/publication", bytes.NewBuffer(body))
+		r.ServeHTTP(w, req)
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, string(expectedOutBody), w.Body.String())
+		assert.Equal(t, test.StatusCode, w.Code)
+	}
 }
 
-func TestDelete(t *testing.T) {
-	testUser := &models.User{
-		Username: "testuser",
-		Password: "testpass",
-	}
-
+func TestGetPopular(t *testing.T) {
 	r := gin.Default()
-	group := r.Group("/api", func(c *gin.Context) {
-		c.Set(auth.CtxUserKey, testUser)
-	})
+	group := r.Group("/api")
 
-	uc := new(usecase.BookmarkUseCaseMock)
+	uc := new(usecase.PublicationUseCaseMock)
 
 	RegisterHTTPEndpoints(group, uc)
 
-	inp := &deleteInput{
-		ID: "id",
+	results := []*models.Publication{
+		{
+			Author: "Maksim",
+			Tags: []string{"1", "2", "3", "4"},
+			Body: "крута стаття",
+			ImageLink: "https://link-to.image",
+			Views: 25,
+			Claps: 3,
+			ReadingTime: 4,
+		},
+		{
+			Author: "Roman",
+			Tags: []string{"1", "2", "3", "4"},
+			Body: "крута стаття",
+			ImageLink: "https://link-to.image",
+			Views: 56,
+			Claps: 8,
+			ReadingTime: 6,
+		},
 	}
-
-	body, err := json.Marshal(inp)
-	assert.NoError(t, err)
-
-	uc.On("DeleteBookmark", testUser, inp.ID).Return(nil)
+	uc.On("GetPopularPublications", int64(2)).Return(results, nil)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("DELETE", "/api/bookmarks", bytes.NewBuffer(body))
+	req, _ := http.NewRequest("GET", "/api/publication/popular?limit=2", nil)
 	r.ServeHTTP(w, req)
 
+	expectedResponse, _ := json.Marshal(&getPublicationsResponse{
+		toPublications(results),
+	})
+
 	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, string(expectedResponse), w.Body.String())
 }

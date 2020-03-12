@@ -16,9 +16,9 @@ import (
 	"time"
 
 	"edittapi/publication"
-	pubuc "edittapi/publication/usecase"
-	pubmongo "edittapi/publication/repository/mongo"
 	pubhttp "edittapi/publication/delivery/http"
+	pubmongo "edittapi/publication/repository/mongo"
+	pubuc "edittapi/publication/usecase"
 )
 
 type App struct {
