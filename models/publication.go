@@ -5,6 +5,7 @@ import "time"
 type Publication struct {
 	ID          string
 	Author      string
+	Title       string
 	Tags        []string
 	Body        string
 	ImageLink   string

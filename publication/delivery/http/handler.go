@@ -27,6 +27,7 @@ func NewHandler(useCase publication.UseCase) *Handler {
 
 type publishInput struct {
 	Author    string   `json:"author" binding:"required,min=3,max=25"`
+	Title     string   `json:"title" binding:"required"`
 	Tags      []string `json:"tags" binding:"required,min=1,max=3"`
 	Body      string   `json:"body" binding:"required"`
 	ImageLink string   `json:"imageLink" binding:"required"`
@@ -35,6 +36,7 @@ type publishInput struct {
 func toPublicationModel(inp *publishInput) models.Publication {
 	return models.Publication{
 		Author:    inp.Author,
+		Title:     inp.Title,
 		Tags:      inp.Tags,
 		Body:      inp.Body,
 		ImageLink: inp.ImageLink,
@@ -62,6 +64,7 @@ func (h *Handler) Publish(c *gin.Context) {
 type publicationResponse struct {
 	ID          string    `json:"id"`
 	Author      string    `json:"author"`
+	Title       string    `json:"title"`
 	Tags        []string  `json:"tags"`
 	Body        string    `json:"body"`
 	ImageLink   string    `json:"imageLink"`
@@ -154,6 +157,7 @@ func toPublication(p *models.Publication) *publicationResponse {
 	return &publicationResponse{
 		ID:          p.ID,
 		Author:      p.Author,
+		Title:       p.Title,
 		Tags:        p.Tags,
 		Body:        p.Body,
 		ImageLink:   p.ImageLink,

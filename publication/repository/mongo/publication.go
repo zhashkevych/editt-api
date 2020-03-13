@@ -15,6 +15,7 @@ import (
 type Publication struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty"`
 	Author      string             `bson:"author"`
+	Title       string             `bson:"title"`
 	Tags        []string           `bson:"tags"`
 	Body        string             `bson:"body"`
 	ImageLink   string             `bson:"imageLink"`
@@ -160,6 +161,7 @@ func (r PublicationRepository) IncrementViews(ctx context.Context, id string) er
 func toPublication(p models.Publication) *Publication {
 	return &Publication{
 		Author:      p.Author,
+		Title:       p.Title,
 		Tags:        p.Tags,
 		Body:        p.Body,
 		ImageLink:   p.ImageLink,
@@ -174,6 +176,7 @@ func toModel(p *Publication) *models.Publication {
 	return &models.Publication{
 		ID:          p.ID.Hex(),
 		Author:      p.Author,
+		Title:       p.Title,
 		Tags:        p.Tags,
 		Body:        p.Body,
 		ImageLink:   p.ImageLink,
