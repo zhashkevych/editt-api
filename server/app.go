@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	"github.com/spf13/viper"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -41,7 +42,19 @@ func NewApp() *App {
 func (a *App) Run(port string) error {
 	// Init gin handler
 	router := gin.Default()
+
+	// Config and add CORS. Configuration can be found in privacyapi.yml. Endpoint is specific to env.
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"http://localhost:8000", "http://localhost:8080"}
+	corsConfig.AllowMethods = []string{"*"}
+	corsConfig.AllowHeaders = []string{"Origin", "X-Client-Version", "X-User-Identity", "X-Mode", "Idempotency-Key", "Authorization", "Content-Type", "Accept", "Referer", "User-Agent", "Access-Control-Allow-Origin", "Accept-Version"}
+	corsConfig.ExposeHeaders = []string{"Content-Length"}
+	corsConfig.AllowCredentials = true
+	corsConfig.MaxAge = 12 * time.Hour
+	corsConfig.AllowBrowserExtensions = true
+
 	router.Use(
+		cors.New(corsConfig),
 		gin.Recovery(),
 		gin.Logger(),
 	)

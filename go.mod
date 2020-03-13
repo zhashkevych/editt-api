@@ -5,7 +5,8 @@ go 1.13
 require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-20190521221207-07e10bec2a34
-	github.com/gin-gonic/gin v1.4.0
+	github.com/gin-contrib/cors v1.3.1
+	github.com/gin-gonic/gin v1.5.0
 	github.com/go-openapi/spec v0.19.7 // indirect
 	github.com/go-openapi/swag v0.19.8 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
