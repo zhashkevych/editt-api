@@ -50,7 +50,9 @@ func (r PublicationRepository) Create(ctx context.Context, publication models.Pu
 func (r PublicationRepository) GetPopular(ctx context.Context, limit int64) ([]*models.Publication, error) {
 	opts := options.Find()
 	opts.SetSort(bson.D{{"views", -1}})
-	opts.SetLimit(limit)
+	if limit != 0 {
+		opts.SetLimit(limit)
+	}
 
 	var publications []*Publication
 
@@ -87,7 +89,9 @@ func (r PublicationRepository) GetPopular(ctx context.Context, limit int64) ([]*
 func (r PublicationRepository) GetLatest(ctx context.Context, limit int64) ([]*models.Publication, error) {
 	opts := options.Find()
 	opts.SetSort(bson.D{{"_id", -1}})
-	opts.SetLimit(limit)
+	if limit != 0 {
+		opts.SetLimit(limit)
+	}
 
 	var publications []*Publication
 

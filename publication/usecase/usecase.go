@@ -53,7 +53,7 @@ func (p PublicationUseCase) IncrementViews(ctx context.Context, id string) error
 
 func estimateReadingTime(text string) int32 {
 	wordsCount := len(strings.Split(text, ""))
-
+	
 	readingTime := int32(wordsCount / averageReadingSpeed)
 	if readingTime == 0 {
 		readingTime = 1

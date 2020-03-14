@@ -79,7 +79,7 @@ type getPublicationsResponse struct {
 }
 
 func (h *Handler) GetPublications(c *gin.Context) {
-	limit := c.DefaultQuery("limit", "3")
+	limit := c.DefaultQuery("limit", "0")
 	tpe := c.DefaultQuery("type", publicationTypePopular)
 
 	limitInt, err := strconv.Atoi(limit)
