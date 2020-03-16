@@ -5,11 +5,12 @@ import (
 	"edittapi/models"
 	"edittapi/publication/usecase"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 )
 
 type publishTest struct {
@@ -30,6 +31,7 @@ func TestPublish(t *testing.T) {
 			input: &publishInput{
 				Author:    "Maksim Zhashkevych",
 				Tags:      []string{"мінімалізм", "лайфстайл"},
+				Title:     "Title",
 				Body:      "крута стаття",
 				ImageLink: "https://link-to.image",
 			},
@@ -40,6 +42,7 @@ func TestPublish(t *testing.T) {
 				Author:    "Maksim Zhashkevych asfaskfkasjfkassaf sf",
 				Tags:      []string{"мінімалізм", "лайфстайл"},
 				Body:      "крута стаття",
+				Title:     "Title",
 				ImageLink: "https://link-to.image",
 			},
 			StatusCode: 400,
@@ -49,6 +52,7 @@ func TestPublish(t *testing.T) {
 				Author:    "Ma",
 				Tags:      []string{"мінімалізм", "лайфстайл"},
 				Body:      "крута стаття",
+				Title:     "Title",
 				ImageLink: "https://link-to.image",
 			},
 			StatusCode: 400,
@@ -58,6 +62,7 @@ func TestPublish(t *testing.T) {
 				Author:    "Maksim",
 				Tags:      []string{},
 				Body:      "крута стаття",
+				Title:     "Title",
 				ImageLink: "https://link-to.image",
 			},
 			StatusCode: 400,
@@ -67,6 +72,7 @@ func TestPublish(t *testing.T) {
 				Author:    "Maksim",
 				Tags:      []string{"1", "2", "3", "4"},
 				Body:      "крута стаття",
+				Title:     "Title",
 				ImageLink: "https://link-to.image",
 			},
 			StatusCode: 400,
@@ -103,6 +109,7 @@ func TestGetPublications(t *testing.T) {
 			Author:      "Maksim",
 			Tags:        []string{"1", "2", "3", "4"},
 			Body:        "крута стаття",
+			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       25,
 			Claps:       3,
@@ -112,6 +119,7 @@ func TestGetPublications(t *testing.T) {
 			Author:      "Roman",
 			Tags:        []string{"1", "2", "3", "4"},
 			Body:        "крута стаття",
+			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       56,
 			Claps:       8,
@@ -137,6 +145,7 @@ func TestGetPublications(t *testing.T) {
 			Author:      "Roman",
 			Tags:        []string{"1", "2", "3", "4"},
 			Body:        "крута стаття",
+			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       56,
 			Claps:       8,
@@ -146,6 +155,7 @@ func TestGetPublications(t *testing.T) {
 			Author:      "Maksim",
 			Tags:        []string{"1", "2", "3", "4"},
 			Body:        "крута стаття",
+			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       25,
 			Claps:       3,
@@ -155,6 +165,7 @@ func TestGetPublications(t *testing.T) {
 			Author:      "Oleg",
 			Tags:        []string{"1", "2", "3", "4"},
 			Body:        "крута стаття",
+			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       25,
 			Claps:       3,
@@ -180,6 +191,7 @@ func TestGetPublications(t *testing.T) {
 			Author:      "Roman",
 			Tags:        []string{"1", "2", "3", "4"},
 			Body:        "крута стаття",
+			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       56,
 			Claps:       8,
@@ -213,6 +225,7 @@ func TestGetById(t *testing.T) {
 		Author:      "Roman",
 		Tags:        []string{"1", "2", "3", "4"},
 		Body:        "крута стаття",
+		Title:       "Title",
 		ImageLink:   "https://link-to.image",
 		Views:       56,
 		Claps:       8,

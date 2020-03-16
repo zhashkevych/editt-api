@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"edittapi/models"
+
 	"github.com/stretchr/testify/mock"
 )
 
@@ -32,4 +33,16 @@ func (p *PublicationUseCaseMock) GetById(ctx context.Context, id string) (*model
 	args := p.Called(id)
 
 	return args.Get(0).(*models.Publication), args.Error(1)
+}
+
+func (p *PublicationUseCaseMock) IncrementClaps(ctx context.Context, id string) error {
+	args := p.Called(id)
+
+	return args.Error(0)
+}
+
+func (p *PublicationUseCaseMock) IncrementViews(ctx context.Context, id string) error {
+	args := p.Called(id)
+
+	return args.Error(0)
 }
