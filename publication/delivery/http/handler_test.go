@@ -136,6 +136,8 @@ func TestGetPublications(t *testing.T) {
 		toPublications(results),
 	})
 
+	expectedResponse = append(expectedResponse, []byte("\n")...)
+
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, string(expectedResponse), w.Body.String())
 
@@ -182,6 +184,8 @@ func TestGetPublications(t *testing.T) {
 		toPublications(results),
 	})
 
+	expectedResponse = append(expectedResponse, []byte("\n")...)
+
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, string(expectedResponse), w.Body.String())
 
@@ -207,6 +211,8 @@ func TestGetPublications(t *testing.T) {
 	expectedResponse, _ = json.Marshal(&getPublicationsResponse{
 		toPublications(results),
 	})
+
+	expectedResponse = append(expectedResponse, []byte("\n")...)
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, string(expectedResponse), w.Body.String())
@@ -239,6 +245,8 @@ func TestGetById(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	expectedResponse, _ := json.Marshal(toPublication(p))
+	
+	expectedResponse = append(expectedResponse, []byte("\n")...)
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, string(expectedResponse), w.Body.String())
