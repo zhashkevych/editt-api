@@ -1,0 +1,2 @@
+mongo:
+  uri: "mongodb+srv://zhashkevych:m1ndFULLdes1res@editt-cluster-0-gaufd.gcp.mongodb.net/test?retryWrites=true&w=majority"

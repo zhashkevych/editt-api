@@ -1,0 +1,2 @@
+mongo:
+  uri: "mongodb://mongo:27017"
