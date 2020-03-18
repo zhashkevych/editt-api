@@ -8,4 +8,4 @@ build-deploy:
 	docker image build -t editt:0.1 -f ./deploy/Dockerfile .
 
 run-deploy:
-	export HOST=prod && docker run -e HOST --publish 8000:8000 --name editt-api editt:0.1
+	export HOST=prod && docker run -e HOST --rm --publish 8000:8000 --name editt-api editt:0.1

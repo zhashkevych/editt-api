@@ -15,8 +15,8 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
-COPY ./.bin/app .
-COPY ./config/ ./config/
+COPY --from=0 /go/src/github.com/zhashkevych/editt-api/.bin/app .
+COPY --from=0 /go/src/github.com/zhashkevych/editt-api/config/ ./config/
 
 EXPOSE 8000
 
