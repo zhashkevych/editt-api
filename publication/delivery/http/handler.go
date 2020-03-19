@@ -27,7 +27,7 @@ func NewHandler(useCase publication.UseCase) *Handler {
 
 type publishInput struct {
 	Author    string   `json:"author" binding:"required,min=3,max=25"`
-	Title     string   `json:"title" binding:"required"`
+	Title     string   `json:"title" binding:"required,min=3,max=100"`
 	Tags      []string `json:"tags" binding:"required,min=1,max=3"`
 	Body      string   `json:"body" binding:"required"`
 	ImageLink string   `json:"imageLink" binding:"required"`
