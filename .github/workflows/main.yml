@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: pull, build & run
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+            cd /editt/editt-api
+            git pull origin master
+            make deploy
+            
