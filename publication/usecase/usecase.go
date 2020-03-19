@@ -9,7 +9,10 @@ import (
 	"time"
 )
 
-const averageReadingSpeed = 200 // Words per minute
+const (
+	averageReadingSpeed = 200 // Words per minute
+	bodyLengthLimit = 50000
+)
 
 type PublicationUseCase struct {
 	repo   publication.Repository
@@ -27,6 +30,10 @@ func (p PublicationUseCase) Publish(ctx context.Context, publication models.Publ
 	publication.PublishedAt = time.Now()
 	publication.Body = p.policy.Sanitize(publication.Body)
 	publication.ReadingTime = estimateReadingTime(publication.Body)
+
+	if err := validateBodyLength(publication.Body); err != nil {
+		return err
+	}
 
 	return p.repo.Create(ctx, publication)
 }
@@ -60,4 +67,11 @@ func estimateReadingTime(text string) int32 {
 	}
 
 	return readingTime
+}
+
+func validateBodyLength(text string) error {
+	if len(strings.Split(text, "")) > bodyLengthLimit {
+		return publication.ErrWordsLimitExceeded
+	}
+	return nil
 }

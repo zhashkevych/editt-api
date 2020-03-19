@@ -54,6 +54,12 @@ func (h *Handler) Publish(c *gin.Context) {
 	p := toPublicationModel(inp)
 
 	if err := h.useCase.Publish(c.Request.Context(), p); err != nil {
+		if err == publication.ErrWordsLimitExceeded {
+			log.Errorf("failed to publish: %s", err.Error())
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
