@@ -112,7 +112,7 @@ func TestGetPublications(t *testing.T) {
 			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       25,
-			Claps:       3,
+			Reactions:   3,
 			ReadingTime: 4,
 		},
 		{
@@ -122,7 +122,7 @@ func TestGetPublications(t *testing.T) {
 			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       56,
-			Claps:       8,
+			Reactions:   8,
 			ReadingTime: 6,
 		},
 	}
@@ -150,7 +150,7 @@ func TestGetPublications(t *testing.T) {
 			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       56,
-			Claps:       8,
+			Reactions:   8,
 			ReadingTime: 6,
 		},
 		{
@@ -160,7 +160,7 @@ func TestGetPublications(t *testing.T) {
 			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       25,
-			Claps:       3,
+			Reactions:   3,
 			ReadingTime: 4,
 		},
 		{
@@ -170,7 +170,7 @@ func TestGetPublications(t *testing.T) {
 			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       25,
-			Claps:       3,
+			Reactions:   3,
 			ReadingTime: 4,
 		},
 	}
@@ -198,7 +198,7 @@ func TestGetPublications(t *testing.T) {
 			Title:       "Title",
 			ImageLink:   "https://link-to.image",
 			Views:       56,
-			Claps:       8,
+			Reactions:   8,
 			ReadingTime: 6,
 		},
 	}
@@ -234,7 +234,7 @@ func TestGetById(t *testing.T) {
 		Title:       "Title",
 		ImageLink:   "https://link-to.image",
 		Views:       56,
-		Claps:       8,
+		Reactions:   8,
 		ReadingTime: 6,
 	}
 

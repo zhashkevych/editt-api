@@ -10,7 +10,7 @@ type Publication struct {
 	Body        string
 	ImageLink   string
 	Views       int32
-	Claps       int32
+	Reactions   int32
 	ReadingTime int32
 	PublishedAt time.Time
 }

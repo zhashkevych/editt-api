@@ -50,8 +50,8 @@ func (p PublicationUseCase) GetById(ctx context.Context, id string) (*models.Pub
 	return p.repo.GetById(ctx, id)
 }
 
-func (p PublicationUseCase) IncrementClaps(ctx context.Context, id string) error {
-	return p.repo.IncrementClaps(ctx, id)
+func (p PublicationUseCase) IncrementReactions(ctx context.Context, id string) error {
+	return p.repo.IncrementReactions(ctx, id)
 }
 
 func (p PublicationUseCase) IncrementViews(ctx context.Context, id string) error {

@@ -59,7 +59,7 @@ func (h *Handler) Publish(c *gin.Context) {
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
-		
+
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -74,7 +74,7 @@ type publicationResponse struct {
 	Tags        []string  `json:"tags"`
 	Body        string    `json:"body"`
 	ImageLink   string    `json:"imageLink"`
-	Claps       int32     `json:"claps"`
+	Reactions   int32     `json:"reactions"`
 	Views       int32     `json:"views"`
 	ReadingTime int32     `json:"readingTime"`
 	PublishedAt time.Time `json:"publishedAt"`
@@ -147,10 +147,10 @@ func (h *Handler) IncrementViews(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
-func (h *Handler) IncrementClaps(c *gin.Context) {
+func (h *Handler) IncrementReactions(c *gin.Context) {
 	id := c.Param("id")
 
-	if err := h.useCase.IncrementClaps(c.Request.Context(), id); err != nil {
+	if err := h.useCase.IncrementReactions(c.Request.Context(), id); err != nil {
 		log.Errorf("error occured while increasing views: %s", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -167,7 +167,7 @@ func toPublication(p *models.Publication) *publicationResponse {
 		Tags:        p.Tags,
 		Body:        p.Body,
 		ImageLink:   p.ImageLink,
-		Claps:       p.Claps,
+		Reactions:   p.Reactions,
 		Views:       p.Views,
 		ReadingTime: p.ReadingTime,
 		PublishedAt: p.PublishedAt,

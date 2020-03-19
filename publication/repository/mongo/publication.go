@@ -20,7 +20,7 @@ type Publication struct {
 	Body        string             `bson:"body"`
 	ImageLink   string             `bson:"imageLink"`
 	Views       int32              `bson:"views"`
-	Claps       int32              `bson:"claps"`
+	Reactions   int32              `bson:"reactions"`
 	ReadingTime int32              `bson:"readingTime"`
 	PublishedAt time.Time          `bson:"publishedAt"`
 }
@@ -148,9 +148,9 @@ func (r PublicationRepository) GetById(ctx context.Context, id string) (*models.
 	return toModel(&p), nil
 }
 
-func (r PublicationRepository) IncrementClaps(ctx context.Context, id string) error {
+func (r PublicationRepository) IncrementReactions(ctx context.Context, id string) error {
 	pid, _ := primitive.ObjectIDFromHex(id)
-	_, err := r.db.UpdateOne(ctx, bson.M{"_id": pid}, bson.M{"$inc": bson.M{"claps": 1}})
+	_, err := r.db.UpdateOne(ctx, bson.M{"_id": pid}, bson.M{"$inc": bson.M{"reactions": 1}})
 
 	return err
 }
@@ -170,7 +170,7 @@ func toPublication(p models.Publication) *Publication {
 		Body:        p.Body,
 		ImageLink:   p.ImageLink,
 		Views:       p.Views,
-		Claps:       p.Claps,
+		Reactions:   p.Reactions,
 		ReadingTime: p.ReadingTime,
 		PublishedAt: p.PublishedAt,
 	}
@@ -185,7 +185,7 @@ func toModel(p *Publication) *models.Publication {
 		Body:        p.Body,
 		ImageLink:   p.ImageLink,
 		Views:       p.Views,
-		Claps:       p.Claps,
+		Reactions:   p.Reactions,
 		ReadingTime: p.ReadingTime,
 		PublishedAt: p.PublishedAt,
 	}
