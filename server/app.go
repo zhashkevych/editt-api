@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	limit "github.com/yangxikun/gin-limit-by-key"
+	"golang.org/x/time/rate"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
@@ -53,10 +55,19 @@ func (a *App) Run(port string) error {
 	corsConfig.MaxAge = 12 * time.Hour
 	corsConfig.AllowBrowserExtensions = true
 
+	rateLimiterMiddleware := limit.NewRateLimiter(func(c *gin.Context) string {
+		return c.ClientIP() // limit rate by client ip
+	}, func(c *gin.Context) (*rate.Limiter, time.Duration) {
+		return rate.NewLimiter(rate.Every(100*time.Millisecond), 10), time.Hour
+	}, func(c *gin.Context) {
+		c.AbortWithStatus(429)
+	})
+
 	router.Use(
 		cors.New(corsConfig),
 		gin.Recovery(),
 		gin.Logger(),
+		rateLimiterMiddleware,
 	)
 
 	// API endpoints
