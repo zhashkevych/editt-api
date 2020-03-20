@@ -3,3 +3,7 @@ port: 8000
 mongo:
   name: "editt"
   publications_collection: "publications"
+  metrics_collection: "metrics"
+
+metrics:
+  interval: 10 #minutes
