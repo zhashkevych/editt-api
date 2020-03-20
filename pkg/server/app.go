@@ -5,8 +5,8 @@ import (
 	limit "github.com/yangxikun/gin-limit-by-key"
 	"golang.org/x/time/rate"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,10 +18,10 @@ import (
 	"os/signal"
 	"time"
 
-	"edittapi/publication"
-	pubhttp "edittapi/publication/delivery/http"
-	pubmongo "edittapi/publication/repository/mongo"
-	pubuc "edittapi/publication/usecase"
+	"edittapi/pkg/publication"
+	pubhttp "edittapi/pkg/publication/delivery/http"
+	pubmongo "edittapi/pkg/publication/repository/mongo"
+	pubuc "edittapi/pkg/publication/usecase"
 )
 
 type App struct {

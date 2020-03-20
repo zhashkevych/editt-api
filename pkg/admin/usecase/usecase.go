@@ -2,9 +2,9 @@ package usecase
 
 import (
 	"context"
-	"edittapi/admin"
-	"edittapi/metrics"
-	"edittapi/models"
+	"edittapi/pkg/admin"
+	"edittapi/pkg/metrics"
+	"edittapi/pkg/models"
 )
 
 type AdminUseCase struct {

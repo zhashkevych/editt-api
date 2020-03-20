@@ -2,8 +2,8 @@ package http
 
 import (
 	"bytes"
-	"edittapi/models"
-	"edittapi/publication/usecase"
+	"edittapi/pkg/models"
+	"edittapi/pkg/publication/usecase"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"

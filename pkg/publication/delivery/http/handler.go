@@ -1,8 +1,8 @@
 package http
 
 import (
-	"edittapi/models"
-	"edittapi/publication"
+	"edittapi/pkg/models"
+	"edittapi/pkg/publication"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"

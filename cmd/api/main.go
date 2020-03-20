@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/spf13/viper"
-	"edittapi/config"
-	"edittapi/server"
+	"edittapi/pkg/config"
+	"edittapi/pkg/server"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"os"
 )
 

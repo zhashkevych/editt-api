@@ -2,7 +2,7 @@ package publication
 
 import (
 	"context"
-	"edittapi/models"
+	"edittapi/pkg/models"
 )
 
 type Repository interface {

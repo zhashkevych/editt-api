@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
-	"edittapi/models"
-	"edittapi/publication"
+	"edittapi/pkg/models"
+	"edittapi/pkg/publication"
 	"github.com/microcosm-cc/bluemonday"
 	"strings"
 	"time"

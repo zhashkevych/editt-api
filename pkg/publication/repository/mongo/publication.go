@@ -2,8 +2,8 @@ package mongo
 
 import (
 	"context"
-	"edittapi/models"
-	"edittapi/publication"
+	"edittapi/pkg/models"
+	"edittapi/pkg/publication"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

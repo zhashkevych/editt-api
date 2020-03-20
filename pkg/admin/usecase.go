@@ -2,7 +2,7 @@ package admin
 
 import (
 	"context"
-	"edittapi/models"
+	"edittapi/pkg/models"
 )
 
 type UseCase interface {

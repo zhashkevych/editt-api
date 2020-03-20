@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"edittapi/models"
+	"edittapi/pkg/models"
 
 	"github.com/stretchr/testify/mock"
 )
