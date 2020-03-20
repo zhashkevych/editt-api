@@ -1,2 +1,5 @@
 mongo:
   uri: "mongodb://mongo:27017"
+
+metrics:
+  interval: 1 #minutes
