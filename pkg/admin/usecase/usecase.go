@@ -2,17 +2,17 @@ package usecase
 
 import (
 	"context"
-	"edittapi/pkg/admin"
 	"edittapi/pkg/metrics"
 	"edittapi/pkg/models"
+	"edittapi/pkg/publication"
 )
 
 type AdminUseCase struct {
 	metricsRepo     metrics.Repository
-	publicationRepo admin.Repository
+	publicationRepo publication.Repository
 }
 
-func NewAdminUseCase(mr metrics.Repository, pr admin.Repository) *AdminUseCase {
+func NewAdminUseCase(mr metrics.Repository, pr publication.Repository) *AdminUseCase {
 	return &AdminUseCase{
 		metricsRepo:     mr,
 		publicationRepo: pr,

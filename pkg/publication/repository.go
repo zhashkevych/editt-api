@@ -14,4 +14,7 @@ type Repository interface {
 
 	IncrementReactions(ctx context.Context, id string) error
 	IncrementViews(ctx context.Context, id string) error
+
+	GetPublications(ctx context.Context) ([]*models.Publication, error)
+	RemovePublication(ctx context.Context, id string) error
 }
