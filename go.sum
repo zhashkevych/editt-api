@@ -240,6 +240,8 @@ github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 github.com/yangxikun/gin-limit-by-key v0.0.0-20190512072151-520697354d5f h1:ERcGMTmr8QfJ2KPgKGnyKG5QEEK+YxraUch0I0gN8uc=
 github.com/yangxikun/gin-limit-by-key v0.0.0-20190512072151-520697354d5f/go.mod h1:ysnqe7upAAVOSwxQZHAMPXbO80SFzg/ArkjnIJIcuGE=
+github.com/zhashkevych/scheduler v1.0.0 h1:gEbSIPykQ6OHGo/F4jJoC2iQtzzwOAQ6U6T6nQoo3v8=
+github.com/zhashkevych/scheduler v1.0.0/go.mod h1:x9baACtHSUu78Jvzv7QytjJ9beTJUh6tCRAtYnKYh3c=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.mongodb.org/mongo-driver v1.1.2 h1:jxcFYjlkl8xaERsgLo+RNquI0epW6zuy/ZRQs6jnrFA=
 go.mongodb.org/mongo-driver v1.1.2/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=

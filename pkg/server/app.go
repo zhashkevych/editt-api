@@ -2,7 +2,13 @@ package server
 
 import (
 	"context"
+	"edittapi/pkg/admin"
+	adminhttp "edittapi/pkg/admin/delivery"
+	adminuc "edittapi/pkg/admin/usecase"
+	"edittapi/pkg/metrics/collector"
+	metricsmgo "edittapi/pkg/metrics/repository/mongo"
 	limit "github.com/yangxikun/gin-limit-by-key"
+	"github.com/zhashkevych/scheduler"
 	"golang.org/x/time/rate"
 
 	"github.com/gin-contrib/cors"
@@ -28,6 +34,8 @@ type App struct {
 	httpServer *http.Server
 
 	publicationUseCase publication.UseCase
+	adminUseCase       admin.UseCase
+	metricsCollector   *collector.MetricsCollector
 }
 
 func NewApp() *App {
@@ -36,12 +44,26 @@ func NewApp() *App {
 	publicationRepo := pubmongo.NewPublicationRepository(db, viper.GetString("mongo.publications_collection"))
 	publicationUseCase := pubuc.NewPublicationUseCase(publicationRepo)
 
+	metricsRepo := metricsmgo.NewMetricsRepository(db, viper.GetString("mongo.metrics_collection"))
+
+	adminUseCase := adminuc.NewAdminUseCase(metricsRepo, publicationRepo)
+
+	metricsCollector := collector.NewMetricsCollector(metricsRepo)
+
 	return &App{
 		publicationUseCase: publicationUseCase,
+		adminUseCase:       adminUseCase,
+		metricsCollector:   metricsCollector,
 	}
 }
 
 func (a *App) Run(port string) error {
+	// Init scheduler
+	ctx := context.Background()
+
+	worker := scheduler.NewScheduler()
+	worker.Add(ctx, a.metricsCollector.Flush, viper.GetDuration("metrics.interval")*time.Minute)
+
 	// Init gin handler
 	router := gin.Default()
 
@@ -68,11 +90,16 @@ func (a *App) Run(port string) error {
 		gin.Recovery(),
 		gin.Logger(),
 		rateLimiterMiddleware,
+		a.metricsCollector.Middleware,
 	)
 
 	// API endpoints
 	api := router.Group("/api")
 	pubhttp.RegisterHTTPEndpoints(api, a.publicationUseCase)
+
+	// Admin Panel Endpoints
+	admin := router.Group("/admin")
+	adminhttp.RegisterHTTPEndpoints(admin, a.adminUseCase)
 
 	// HTTP Server
 	a.httpServer = &http.Server{
@@ -93,6 +120,8 @@ func (a *App) Run(port string) error {
 	signal.Notify(quit, os.Interrupt, os.Interrupt)
 
 	<-quit
+
+	worker.Stop()
 
 	ctx, shutdown := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdown()
