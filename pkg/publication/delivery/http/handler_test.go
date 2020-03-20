@@ -133,7 +133,7 @@ func TestGetPublications(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	expectedResponse, _ := json.Marshal(&getPublicationsResponse{
-		toPublications(results),
+		results,
 	})
 
 	expectedResponse = append(expectedResponse, []byte("\n")...)
@@ -181,7 +181,7 @@ func TestGetPublications(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	expectedResponse, _ = json.Marshal(&getPublicationsResponse{
-		toPublications(results),
+		results,
 	})
 
 	expectedResponse = append(expectedResponse, []byte("\n")...)
@@ -209,7 +209,7 @@ func TestGetPublications(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	expectedResponse, _ = json.Marshal(&getPublicationsResponse{
-		toPublications(results),
+		results,
 	})
 
 	expectedResponse = append(expectedResponse, []byte("\n")...)
@@ -244,7 +244,7 @@ func TestGetById(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/api/publications/5e6a03309ea43ef775bd247e", nil)
 	r.ServeHTTP(w, req)
 
-	expectedResponse, _ := json.Marshal(toPublication(p))
+	expectedResponse, _ := json.Marshal(p)
 	
 	expectedResponse = append(expectedResponse, []byte("\n")...)
 

@@ -7,7 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 const (
@@ -67,21 +66,8 @@ func (h *Handler) Publish(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-type publicationResponse struct {
-	ID          string    `json:"id"`
-	Author      string    `json:"author"`
-	Title       string    `json:"title"`
-	Tags        []string  `json:"tags"`
-	Body        string    `json:"body"`
-	ImageLink   string    `json:"imageLink"`
-	Reactions   int32     `json:"reactions"`
-	Views       int32     `json:"views"`
-	ReadingTime int32     `json:"readingTime"`
-	PublishedAt time.Time `json:"publishedAt"`
-}
-
 type getPublicationsResponse struct {
-	Publications []*publicationResponse `json:"publications"`
+	Publications []*models.Publication `json:"publications"`
 }
 
 func (h *Handler) GetPublications(c *gin.Context) {
@@ -113,7 +99,7 @@ func (h *Handler) GetPublications(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, &getPublicationsResponse{
-		Publications: toPublications(ps),
+		Publications: ps,
 	})
 }
 
@@ -132,7 +118,7 @@ func (h *Handler) GetById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, toPublication(p))
+	c.JSON(http.StatusOK, p)
 }
 
 func (h *Handler) IncrementViews(c *gin.Context) {
@@ -157,29 +143,4 @@ func (h *Handler) IncrementReactions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, nil)
-}
-
-func toPublication(p *models.Publication) *publicationResponse {
-	return &publicationResponse{
-		ID:          p.ID,
-		Author:      p.Author,
-		Title:       p.Title,
-		Tags:        p.Tags,
-		Body:        p.Body,
-		ImageLink:   p.ImageLink,
-		Reactions:   p.Reactions,
-		Views:       p.Views,
-		ReadingTime: p.ReadingTime,
-		PublishedAt: p.PublishedAt,
-	}
-}
-
-func toPublications(ps []*models.Publication) []*publicationResponse {
-	out := make([]*publicationResponse, len(ps))
-
-	for i := range ps {
-		out[i] = toPublication(ps[i])
-	}
-
-	return out
 }
