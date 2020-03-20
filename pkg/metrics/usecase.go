@@ -5,7 +5,7 @@ import (
 	"edittapi/pkg/models"
 )
 
-type Repository interface {
+type UseCase interface {
 	SetMetrics(ctx context.Context, metrics *models.Metrics) error
 	GetMetrics(ctx context.Context) ([]*models.Metrics, error)
 }

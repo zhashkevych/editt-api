@@ -19,7 +19,7 @@ func NewAdminUseCase(mr metrics.Repository, pr publication.Repository) *AdminUse
 	}
 }
 
-func (u AdminUseCase) GetMetrics(ctx context.Context) (*models.Metrics, error) {
+func (u AdminUseCase) GetMetrics(ctx context.Context) ([]*models.Metrics, error) {
 	return u.metricsRepo.GetMetrics(ctx)
 }
 
