@@ -2,18 +2,20 @@ package delivery
 
 import (
 	"edittapi/pkg/admin"
+	"edittapi/pkg/admin/delivery/auth"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase admin.UseCase) {
-	h := NewHandler(usecase)
+func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase admin.UseCase, authorizer *auth.Authorizer) {
+	h := NewHandler(usecase, authorizer)
 
-	router.GET("/metrics", h.GetMetrics)
+	router.POST("/sign-in", h.SignIn)
 
-	publications := router.Group("/publications")
+	router.GET("/metrics", authorizer.Middleware, h.GetMetrics)
+
+	publications := router.Group("/publications", authorizer.Middleware)
 	{
 		publications.GET("", h.GetPublications)
 		publications.DELETE("/:id", h.RemovePublication)
 	}
 }
-

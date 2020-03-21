@@ -1,5 +1,12 @@
 port: 8000
 
+authorizer:
+  username: "edittor"
+  password_hash: "b84a6c3adad04a39f4ce1bbb878b5ef28aed4f00"
+  signing_key: "wcxhhH0wfG2tuvnXFpo8"
+  hash_salt: "0OkSoY3uxtmUxYrDr7Ye"
+  token_ttl: 86400
+
 mongo:
   name: "editt"
   publications_collection: "publications"

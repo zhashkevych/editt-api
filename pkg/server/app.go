@@ -4,6 +4,7 @@ import (
 	"context"
 	"edittapi/pkg/admin"
 	adminhttp "edittapi/pkg/admin/delivery"
+	"edittapi/pkg/admin/delivery/auth"
 	adminuc "edittapi/pkg/admin/usecase"
 	"edittapi/pkg/metrics/collector"
 	metricsmgo "edittapi/pkg/metrics/repository/mongo"
@@ -99,7 +100,14 @@ func (a *App) Run(port string) error {
 
 	// Admin Panel Endpoints
 	admin := router.Group("/admin")
-	adminhttp.RegisterHTTPEndpoints(admin, a.adminUseCase)
+	authorizer := auth.NewAuthorizer(
+		viper.GetString("authorizer.username"),
+		viper.GetString("authorizer.password_hash"),
+		viper.GetString("authorizer.hash_salt"),
+		[]byte(viper.GetString("authorizer.signing_key")),
+		viper.GetDuration("authorizer.expire_duration"),
+	)
+	adminhttp.RegisterHTTPEndpoints(admin, a.adminUseCase, authorizer)
 
 	// HTTP Server
 	a.httpServer = &http.Server{

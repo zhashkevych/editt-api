@@ -2,19 +2,54 @@ package delivery
 
 import (
 	"edittapi/pkg/admin"
+	"edittapi/pkg/admin/delivery/auth"
 	"edittapi/pkg/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 type Handler struct {
-	useCase admin.UseCase
+	authorizer *auth.Authorizer
+	useCase    admin.UseCase
 }
 
-func NewHandler(useCase admin.UseCase) *Handler {
+func NewHandler(useCase admin.UseCase, authorizer *auth.Authorizer) *Handler {
 	return &Handler{
-		useCase: useCase,
+		useCase:    useCase,
+		authorizer: authorizer,
 	}
+}
+
+type signInInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type signInResponse struct {
+	Token string `json:"token"`
+}
+
+func (h *Handler) SignIn(c *gin.Context) {
+	inp := new(signInInput)
+	if err := c.BindJSON(inp); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	token, err := h.authorizer.GenerateToken(inp.Username, inp.Password)
+	if err != nil {
+		if err == auth.ErrInvalidAccessToken {
+			c.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, &signInResponse{
+		Token: token,
+	})
 }
 
 type getPublicationsResponse struct {
