@@ -17,7 +17,6 @@ jobs:
         port: ${{ secrets.PORT }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-            whoami
             cd ${{ secrets.PROJECTPATH }}
             git pull origin master
             make run-deploy
