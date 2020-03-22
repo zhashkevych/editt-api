@@ -1,50 +1,107 @@
-# Go Clean Architecture
-Example that shows core principles of the Clean Architecture in Golang projects.
+# editt API 
 
-## Rules of Clean Architecture by Uncle Bob:
-- Independent of Frameworks. The architecture does not depend on the existence of some library of feature laden software. This allows you to use such frameworks as tools, rather than having to cram your system into their limited constraints.
-- Testable. The business rules can be tested without the UI, Database, Web Server, or any other external element.
-- Independent of UI. The UI can change easily, without changing the rest of the system. A Web UI could be replaced with a console UI, for example, without changing the business rules.
-- Independent of Database. You can swap out Oracle or SQL Server, for Mongo, BigTable, CouchDB, or something else. Your business rules are not bound to the database.
-- Idependent of any external agency. In fact your business rules simply don’t know anything at all about the outside world. 
+## Requirements
+- go 1.13
+- docker & docker-compose
 
-More on topic can be found <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">here</a>.
+## Run Project
 
-### Project Description&Structure:
-REST API with custom JWT-based authentication system. Core functionality is about creating and managing bookmarks (Simple clone of <a href="https://app.getpocket.com/">Pocket</a>).
+Use ```make run-local``` to build and run docker containers with application itself and mongodb instance
 
-#### Structure:
-4 Domain layers:
+Use ```make run-deploy``` on production environment to run API container
 
-- Models layer
-- Repository layer
-- UseCase layer
-- Delivery layer
+## Client's API:
 
-## API:
+### GET /api/publications
 
-### POST /auth/sign-up
+Retrieves all publications hosted on platform:
 
-Creates new user 
+#### Example Params: 
+```
+/api/publications?type=popular&limit=3
+```
+
+Where: type (popular/latest) and limit is arbitrary int
+
+#### Example Response: 
+```
+{
+   "publications":[
+      {
+         "id":"5e7202199aa5d6d4014d4993",
+         "author":"Maksim Zhashkevych",
+         "title":"Стань Богаче, Используя этот Простой Трюк",
+         "tags":[
+            "финансы",
+            "деньги",
+            "бюджет"
+         ],
+         "body":"text",
+         "imageLink":"https://miro.medium.com/max/10680/0*Jz9bUxFLDCZEGlxb",
+         "reactions":0,
+         "views":1,
+         "readingTime":2,
+         "publishedAt":"2020-03-18T11:12:25.583Z"
+      }
+   ]
+}
+```
+
+### POST /api/publications
+
+Used to publish new publication
 
 ##### Example Input: 
 ```
 {
-	"username": "UncleBob",
-	"password": "cleanArch"
-} 
+	"author": "Maksim Zhashkevych",
+	"title": "Стань Богаче, Используя этот Простой Трюк", 
+	"tags": ["финансы", "деньги", "бюджет"], 
+	"body": "<p>text</p>",
+	"imageLink": "https://miro.medium.com/max/10680/0*Jz9bUxFLDCZEGlxb"
+	
+}
 ```
 
+### GET /api/publications/:id
 
-### POST /auth/sign-in
+Used to retrieve single publication
 
-Request to get JWT Token based on user credentials
+##### Example Response: 
+```
+{
+    "id": "5e7202199aa5d6d4014d4993",
+    "author": "Maksim Zhashkevych",
+    "title": "Стань Богаче, Используя этот Простой Трюк",
+    "tags": [
+        "финансы",
+        "деньги",
+        "бюджет"
+    ],
+    "body": "<p>text</p>",
+    "imageLink": "https://miro.medium.com/max/10680/0*Jz9bUxFLDCZEGlxb",
+    "reactions": 0,
+    "views": 2,
+    "readingTime": 2,
+    "publishedAt": "2020-03-18T11:12:25.583Z"
+}
+```
+
+### POST /api/publications/:id/reaction
+
+Used to increse reactions count for specific publication
+
+## Admin's Panel API:
+
+### POST /admin/sign-in
+
+Used to get authorization token
 
 ##### Example Input: 
 ```
 {
-	"username": "UncleBob",
-	"password": "cleanArch"
+	"username": "edittor",
+	"password": "edittor"
 } 
 ```
 
@@ -55,52 +112,55 @@ Request to get JWT Token based on user credentials
 } 
 ```
 
-### POST /api/bookmarks
+### GET /admin/metrics
 
-Creates new bookmark
-
-##### Example Input: 
-```
-{
-	"url": "https://edittapi",
-	"title": "Go Clean Architecture example"
-} 
-```
-
-### GET /api/bookmarks
-
-Returns all user bookmarks
+Used to retrieve metrics
 
 ##### Example Response: 
 ```
 {
-	"bookmarks": [
-            {
-                "id": "5da2d8aae9b63715ddfae856",
-                "url": "https://edittapi",
-                "title": "Go Clean Architecture example"
-            }
-    ]
-} 
+   {
+       "last24": {
+           "UniqueVisitorsCount": 2563,
+           "Timestamp": "0001-01-01T00:00:00Z"
+       },
+       "lastHour": {
+           "UniqueVisitorsCount": 256,
+           "Timestamp": "0001-01-01T00:00:00Z"
+       },
+       "publicationsCount": 162
+   }
+}
 ```
 
-### DELETE /api/bookmarks
+### GET /admin/publications
 
-Deletes bookmark by ID:
+Retrieves all platform publications
 
-##### Example Input: 
+##### Example Response: 
 ```
 {
-	"id": "5da2d8aae9b63715ddfae856"
-} 
+   "publications":[
+      {
+         "id":"5e7202199aa5d6d4014d4993",
+         "author":"Maksim Zhashkevych",
+         "title":"Стань Богаче, Используя этот Простой Трюк",
+         "tags":[
+            "финансы",
+            "деньги",
+            "бюджет"
+         ],
+         "body":"text",
+         "imageLink":"https://miro.medium.com/max/10680/0*Jz9bUxFLDCZEGlxb",
+         "reactions":0,
+         "views":1,
+         "readingTime":2,
+         "publishedAt":"2020-03-18T11:12:25.583Z"
+      }
+   ]
+}
 ```
 
+### DELETE /admin/publications/:id
 
-## Requirements
-- go 1.13
-- docker & docker-compose
-
-## Run Project
-
-Use ```make run``` to build and run docker containers with application itself and mongodb instance
-
+Used to remove publication by ID
