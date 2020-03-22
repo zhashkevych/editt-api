@@ -16,7 +16,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 COPY --from=0 /go/src/github.com/zhashkevych/editt-api/.bin/app .
-COPY --from=0 /go/src/github.com/zhashkevych/editt-api/config/ ./config/
+COPY --from=0 /go/src/github.com/zhashkevych/editt-api/pkg/config/ ./config/
 
 EXPOSE 8000
 
