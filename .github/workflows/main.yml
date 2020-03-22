@@ -18,5 +18,5 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
             cd ${{ secrets.PROJECTPATH }}
-            git pull origin master
+            git checkout master && git pull origin master
             make run-deploy

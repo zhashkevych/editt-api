@@ -8,8 +8,7 @@ build-deploy:
 	docker image build -t editt:0.1 -f ./deploy/Dockerfile .
 
 run-container:
+	export HOST=prod
 	./run-container.sh
 
-run-deploy: build-deploy
-	export HOST=prod
-	run-container
+run-deploy: build-deploy run-container
