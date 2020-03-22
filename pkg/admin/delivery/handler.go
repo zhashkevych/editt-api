@@ -78,7 +78,9 @@ func (h *Handler) RemovePublication(c *gin.Context) {
 }
 
 type getMetricsResponse struct {
-	Metrics []*models.Metrics `json:"metrics"`
+	Last24Hours       *models.Metrics `json:"last24"`
+	LastHour          *models.Metrics `json:"lastHour"`
+	PublicationsCount int64           `json:"publicationsCount"`
 }
 
 func (h *Handler) GetMetrics(c *gin.Context) {
@@ -88,5 +90,9 @@ func (h *Handler) GetMetrics(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &getMetricsResponse{ms})
+	c.JSON(http.StatusOK, &getMetricsResponse{
+		LastHour:          ms.LastHour,
+		Last24Hours:       ms.Last24Hours,
+		PublicationsCount: ms.PublicationsCount,
+	})
 }

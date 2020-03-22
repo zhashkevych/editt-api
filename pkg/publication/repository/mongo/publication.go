@@ -196,7 +196,7 @@ func (r PublicationRepository) GetPublications(ctx context.Context) ([]*models.P
 }
 
 func (r PublicationRepository) GetPublicationsCount(ctx context.Context) (int64, error) {
-	return r.db.CountDocuments(ctx, nil)
+	return r.db.CountDocuments(ctx, bson.M{})
 }
 
 func (r PublicationRepository) RemovePublication(ctx context.Context, id string) error {
