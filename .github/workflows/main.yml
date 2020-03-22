@@ -20,5 +20,4 @@ jobs:
             whoami
             cd ${{ secrets.PROJECTPATH }}
             git pull origin master
-            make build-deploy
             make run-deploy
