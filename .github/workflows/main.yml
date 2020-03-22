@@ -13,10 +13,12 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
+        key: ${{ secrets.SSHKEY }}
         port: ${{ secrets.PORT }}
+        passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-            cd /editt/editt-api
+            whoami
+            cd ${{ secrets.PROJECTPATH }}
             git pull origin master
             make build-deploy
             make run-deploy
