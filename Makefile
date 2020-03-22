@@ -7,7 +7,9 @@ run-local: build-local
 build-deploy:
 	docker image build -t editt:0.1 -f ./deploy/Dockerfile .
 
+run-container:
+	./run-container.sh
+
 run-deploy: build-deploy
-	docker stop editt-api
 	export HOST=prod
-	docker run -e HOST --rm -d --publish 8000:8000 --network editt --name editt-api editt:0.1
+	run-container
