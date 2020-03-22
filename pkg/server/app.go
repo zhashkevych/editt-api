@@ -71,7 +71,7 @@ func (a *App) Run(port string) error {
 
 	// Config and add CORS. Configuration can be found in privacyapi.yml. Endpoint is specific to env.
 	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{"http://localhost:8000", "http://localhost:8080", "http://editt.network"}
+	corsConfig.AllowOrigins = []string{"http://localhost:8000", "http://localhost:8080", "http://localhost", "http://editt.network"}
 	corsConfig.AllowMethods = []string{"*"}
 	corsConfig.AllowHeaders = []string{"Origin", "X-Client-Version", "X-User-Identity", "X-Mode", "Idempotency-Key", "Authorization", "Content-Type", "Accept", "Referer", "User-Agent", "Access-Control-Allow-Origin", "Accept-Version"}
 	corsConfig.ExposeHeaders = []string{"Content-Length"}
