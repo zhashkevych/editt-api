@@ -45,3 +45,22 @@ func (r *PublicationRepoMock) IncrementViews(ctx context.Context, id string) err
 
 	return args.Error(0)
 }
+
+
+func (r *PublicationRepoMock) GetPublications(ctx context.Context) ([]*models.Publication, error) {
+	args := r.Called(ctx)
+
+	return args.Get(0).([]*models.Publication), args.Error(1)
+}
+
+func (r *PublicationRepoMock) GetPublicationsCount(ctx context.Context) (int64, error) {
+	args := r.Called(ctx)
+
+	return args.Get(0).(int64), args.Error(1)
+}
+
+func (r *PublicationRepoMock) RemovePublication(ctx context.Context, id string) error {
+	args := r.Called(ctx, id)
+
+	return args.Error(0)
+}

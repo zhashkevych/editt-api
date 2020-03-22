@@ -162,7 +162,6 @@ func (r PublicationRepository) IncrementViews(ctx context.Context, id string) er
 	return err
 }
 
-
 func (r PublicationRepository) GetPublications(ctx context.Context) ([]*models.Publication, error) {
 	var publications []*Publication
 
@@ -194,6 +193,10 @@ func (r PublicationRepository) GetPublications(ctx context.Context) ([]*models.P
 	}
 
 	return toModels(publications), nil
+}
+
+func (r PublicationRepository) GetPublicationsCount(ctx context.Context) (int64, error) {
+	return r.db.CountDocuments(ctx, nil)
 }
 
 func (r PublicationRepository) RemovePublication(ctx context.Context, id string) error {

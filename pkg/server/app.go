@@ -8,6 +8,7 @@ import (
 	adminuc "edittapi/pkg/admin/usecase"
 	"edittapi/pkg/metrics/collector"
 	metricsmgo "edittapi/pkg/metrics/repository/mongo"
+	metricsuc "edittapi/pkg/metrics/usecase"
 	limit "github.com/yangxikun/gin-limit-by-key"
 	"github.com/zhashkevych/scheduler"
 	"golang.org/x/time/rate"
@@ -46,10 +47,10 @@ func NewApp() *App {
 	publicationUseCase := pubuc.NewPublicationUseCase(publicationRepo)
 
 	metricsRepo := metricsmgo.NewMetricsRepository(db, viper.GetString("mongo.metrics_collection"))
+	metricsUseCase := metricsuc.NewMetricsUseCase(metricsRepo, publicationUseCase)
+	metricsCollector := collector.NewMetricsCollector(metricsUseCase)
 
-	adminUseCase := adminuc.NewAdminUseCase(metricsRepo, publicationRepo)
-
-	metricsCollector := collector.NewMetricsCollector(metricsRepo)
+	adminUseCase := adminuc.NewAdminUseCase(metricsUseCase, publicationUseCase)
 
 	return &App{
 		publicationUseCase: publicationUseCase,

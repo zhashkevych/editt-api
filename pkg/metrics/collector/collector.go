@@ -12,14 +12,14 @@ import (
 
 type MetricsCollector struct {
 	sync.Mutex
-	IPs  map[string]interface{}
-	repo metrics.Repository
+	IPs     map[string]interface{}
+	useCase metrics.UseCase
 }
 
-func NewMetricsCollector(repo metrics.Repository) *MetricsCollector {
+func NewMetricsCollector(usecase metrics.UseCase) *MetricsCollector {
 	return &MetricsCollector{
-		IPs:  make(map[string]interface{}),
-		repo: repo,
+		IPs:     make(map[string]interface{}),
+		useCase: usecase,
 	}
 }
 
@@ -31,11 +31,11 @@ func (mc *MetricsCollector) Middleware(c *gin.Context) {
 
 func (mc *MetricsCollector) Flush(ctx context.Context) {
 	ms := models.Metrics{
-		UniqueVisitorsCount: int32(len(mc.IPs)),
+		UniqueVisitorsCount: int64(len(mc.IPs)),
 		Timestamp:           time.Now(),
 	}
 
-	if err := mc.repo.SetMetrics(ctx, ms); err != nil {
+	if err := mc.useCase.SetMetrics(ctx, ms); err != nil {
 		log.Errorf("failed to write metrics: %s", err.Error())
 		return
 	}

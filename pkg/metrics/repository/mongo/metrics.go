@@ -12,7 +12,8 @@ import (
 
 type Metrics struct {
 	ID                  primitive.ObjectID `bson:"_id,omitempty"`
-	UniqueVisitorsCount int32              `bson:"unique_visitors_count"`
+	UniqueVisitorsCount int64              `bson:"unique_visitors_count"`
+	PublicationsCount   int64              `bson:"publications_count"`
 	Timestamp           time.Time          `bson:"timestamp"`
 }
 
@@ -74,6 +75,7 @@ func (r MetricsRepository) GetMetrics(ctx context.Context) ([]*models.Metrics, e
 func toMetrics(m models.Metrics) *Metrics {
 	return &Metrics{
 		UniqueVisitorsCount: m.UniqueVisitorsCount,
+		PublicationsCount:   m.PublicationsCount,
 		Timestamp:           m.Timestamp,
 	}
 }
@@ -81,6 +83,7 @@ func toMetrics(m models.Metrics) *Metrics {
 func toModel(m *Metrics) *models.Metrics {
 	return &models.Metrics{
 		UniqueVisitorsCount: m.UniqueVisitorsCount,
+		PublicationsCount:   m.PublicationsCount,
 		Timestamp:           m.Timestamp,
 	}
 }

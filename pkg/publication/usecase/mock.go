@@ -46,3 +46,21 @@ func (p *PublicationUseCaseMock) IncrementViews(ctx context.Context, id string) 
 
 	return args.Error(0)
 }
+
+func (p *PublicationUseCaseMock) GetPublications(ctx context.Context) ([]*models.Publication, error) {
+	args := p.Called(ctx)
+
+	return args.Get(0).([]*models.Publication), args.Error(1)
+}
+
+func (p *PublicationUseCaseMock) GetPublicationsCount(ctx context.Context) (int64, error) {
+	args := p.Called(ctx)
+
+	return args.Get(0).(int64), args.Error(1)
+}
+
+func (p *PublicationUseCaseMock) RemovePublication(ctx context.Context, id string) error {
+	args := p.Called(ctx, id)
+
+	return args.Error(0)
+}

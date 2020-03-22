@@ -8,25 +8,25 @@ import (
 )
 
 type AdminUseCase struct {
-	metricsRepo     metrics.Repository
-	publicationRepo publication.Repository
+	metricsUseCase     metrics.UseCase
+	publicationUseCase publication.UseCase
 }
 
-func NewAdminUseCase(mr metrics.Repository, pr publication.Repository) *AdminUseCase {
+func NewAdminUseCase(mr metrics.UseCase, pr publication.UseCase) *AdminUseCase {
 	return &AdminUseCase{
-		metricsRepo:     mr,
-		publicationRepo: pr,
+		metricsUseCase:     mr,
+		publicationUseCase: pr,
 	}
 }
 
 func (u AdminUseCase) GetMetrics(ctx context.Context) ([]*models.Metrics, error) {
-	return u.metricsRepo.GetMetrics(ctx)
+	return u.metricsUseCase.GetMetrics(ctx)
 }
 
 func (u AdminUseCase) GetAllPublications(ctx context.Context) ([]*models.Publication, error) {
-	return u.publicationRepo.GetPublications(ctx)
+	return u.publicationUseCase.GetPublications(ctx)
 }
 
 func (u AdminUseCase) RemovePublication(ctx context.Context, id string) error {
-	return u.publicationRepo.RemovePublication(ctx, id)
+	return u.publicationUseCase.RemovePublication(ctx, id)
 }

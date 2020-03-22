@@ -11,7 +11,7 @@ import (
 
 const (
 	averageReadingSpeed = 200 // Words per minute
-	bodyLengthLimit = 50000
+	bodyLengthLimit     = 50000
 )
 
 type PublicationUseCase struct {
@@ -58,9 +58,21 @@ func (p PublicationUseCase) IncrementViews(ctx context.Context, id string) error
 	return p.repo.IncrementViews(ctx, id)
 }
 
+func (p PublicationUseCase) GetPublications(ctx context.Context) ([]*models.Publication, error) {
+	return p.repo.GetPublications(ctx)
+}
+
+func (p PublicationUseCase) GetPublicationsCount(ctx context.Context) (int64, error) {
+	return p.repo.GetPublicationsCount(ctx)
+}
+
+func (p PublicationUseCase) RemovePublication(ctx context.Context, id string) error {
+	return p.repo.RemovePublication(ctx, id)
+}
+
 func estimateReadingTime(text string) int32 {
 	wordsCount := len(strings.Split(text, " "))
-	
+
 	readingTime := int32(wordsCount / averageReadingSpeed)
 	if readingTime == 0 {
 		readingTime = 1
