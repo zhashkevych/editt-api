@@ -7,13 +7,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
 type Metrics struct {
 	ID                  primitive.ObjectID `bson:"_id,omitempty"`
 	UniqueVisitorsCount int64              `bson:"unique_visitors_count"`
-	Timestamp           time.Time          `bson:"timestamp"`
+	Timestamp           time.Time              `bson:"timestamp"`
 }
 
 type MetricsRepository struct {
@@ -38,10 +39,14 @@ func (r MetricsRepository) SetMetrics(ctx context.Context, metrics models.Metric
 	return nil
 }
 
-func (r MetricsRepository) GetMetrics(ctx context.Context) ([]*models.Metrics, error) {
+func (r MetricsRepository) GetMetrics(ctx context.Context, timeFrom time.Time) ([]*models.Metrics, error) {
 	var ms []*Metrics
 
-	cur, err := r.db.Find(ctx, bson.M{})
+	opts := options.Find()
+	opts.SetSort(bson.M{"_id": -1})
+
+	//cur, err := r.db.Find(ctx, bson.M{"timestamp": bson.M{"$gte": timeFrom.Format(time.RFC3339)}})
+	cur, err := r.db.Find(ctx, bson.M{"timestamp": bson.M{"$gte": timeFrom}}, opts)
 	if err != nil {
 		log.Errorf("Publication Repo: error occured while finding popular publications: %s", err.Error())
 		return nil, err

@@ -43,4 +43,6 @@ func (mc *MetricsCollector) Flush(ctx context.Context) {
 	mc.Lock()
 	mc.IPs = make(map[string]interface{})
 	mc.Unlock()
+
+	log.Info("metrics successfully written to DB at: %s", time.Now().Format(time.RFC3339))
 }

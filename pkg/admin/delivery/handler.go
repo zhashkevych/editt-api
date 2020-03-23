@@ -5,6 +5,7 @@ import (
 	"edittapi/pkg/admin/delivery/auth"
 	"edittapi/pkg/models"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -43,6 +44,7 @@ func (h *Handler) SignIn(c *gin.Context) {
 			return
 		}
 
+		log.Errorf("error ocurred while generating JWT Token: %s", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -59,6 +61,7 @@ type getPublicationsResponse struct {
 func (h *Handler) GetPublications(c *gin.Context) {
 	ps, err := h.useCase.GetAllPublications(c.Request.Context())
 	if err != nil {
+		log.Errorf("error ocurred while getting publications from DB: %s", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -70,6 +73,7 @@ func (h *Handler) RemovePublication(c *gin.Context) {
 	id := c.Param("id")
 
 	if err := h.useCase.RemovePublication(c.Request.Context(), id); err != nil {
+		log.Errorf("error ocurred while removing publication from DB: %s", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -77,22 +81,13 @@ func (h *Handler) RemovePublication(c *gin.Context) {
 	c.JSON(http.StatusOK, nil)
 }
 
-type getMetricsResponse struct {
-	Last24Hours       *models.Metrics `json:"last24"`
-	LastHour          *models.Metrics `json:"lastHour"`
-	PublicationsCount int64           `json:"publicationsCount"`
-}
-
 func (h *Handler) GetMetrics(c *gin.Context) {
-	ms, err := h.useCase.GetMetrics(c.Request.Context())
+	metricsData, err := h.useCase.GetMetrics(c.Request.Context())
 	if err != nil {
+		log.Errorf("error ocurred while getting metrics: %s", err.Error())
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	c.JSON(http.StatusOK, &getMetricsResponse{
-		LastHour:          ms.LastHour,
-		Last24Hours:       ms.Last24Hours,
-		PublicationsCount: ms.PublicationsCount,
-	})
+	c.JSON(http.StatusOK, metricsData)
 }
