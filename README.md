@@ -119,17 +119,17 @@ Used to retrieve metrics
 ##### Example Response: 
 ```
 {
-   {
-       "last24": {
-           "UniqueVisitorsCount": 2563,
-           "Timestamp": "0001-01-01T00:00:00Z"
-       },
-       "lastHour": {
-           "UniqueVisitorsCount": 256,
-           "Timestamp": "0001-01-01T00:00:00Z"
-       },
-       "publicationsCount": 162
-   }
+    "last24": [
+        {
+            "unique_visitors_count": 245,
+            "timestamp": "2020-03-23T15:25:01.908Z"
+        },
+        {
+            "unique_visitors_count": 258,
+            "timestamp": "2020-03-23T15:22:20.514Z"
+        }
+    ],
+    "publications_count": 3
 }
 ```
 
