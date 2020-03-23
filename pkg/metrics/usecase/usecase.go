@@ -46,27 +46,27 @@ func (u MetricsUseCase) aggregateMetrics(ctx context.Context, ms []*models.Metri
 
 	// last 24 hours
 	fromTime := time.Now().AddDate(0, 0, -1)
-	aggregated.Last24Hours.UniqueVisitorsCount = getAverageUniqueUsers(ms, fromTime)
+	aggregated.Last24Hours.UniqueVisitorsCount = getMaxUniqueUsers(ms, fromTime)
 
 	// last hour
 	fromTime = time.Now().Add(-time.Hour)
-	aggregated.Last24Hours.UniqueVisitorsCount = getAverageUniqueUsers(ms, fromTime)
+	aggregated.Last24Hours.UniqueVisitorsCount = getMaxUniqueUsers(ms, fromTime)
 
 	return aggregated, nil
 }
 
-func getAverageUniqueUsers(ms []*models.Metrics, fromDate time.Time) int64 {
-	uniqueAvg := int64(0)
+func getMaxUniqueUsers(ms []*models.Metrics, fromDate time.Time) int64 {
+	maxUnique := ms[0].UniqueVisitorsCount
 
 	for _, m := range ms {
 		if m.Timestamp.Unix() < fromDate.Unix() {
 			break
 		}
 
-		uniqueAvg += m.UniqueVisitorsCount
+		if m.UniqueVisitorsCount > maxUnique {
+			maxUnique = m.UniqueVisitorsCount
+		}
 	}
 
-	uniqueAvg /= int64(len(ms))
-
-	return uniqueAvg
+	return maxUnique
 }
