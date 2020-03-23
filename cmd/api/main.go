@@ -3,15 +3,23 @@ package main
 import (
 	"edittapi/pkg/config"
 	"edittapi/pkg/server"
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
 )
 
+const ENV_PROD = "prod"
+
 func init() {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.WarnLevel)
+
+
+	if os.Getenv("HOST") == ENV_PROD {
+		gin.SetMode(gin.ReleaseMode)
+	}
 }
 
 func main() {
