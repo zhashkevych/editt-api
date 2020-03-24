@@ -3,7 +3,6 @@ package http
 import (
 	"edittapi/pkg/models"
 	"edittapi/pkg/publication"
-	"edittapi/sidecar/filestorage"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -20,19 +19,19 @@ const (
 var (
 	IMAGE_TYPES = map[string]interface{}{
 		"image/jpeg": nil,
-		"image/png": nil,
+		"image/png":  nil,
 	}
 )
 
 type Handler struct {
-	useCase     publication.UseCase
-	fileStorage *filestorage.FileStorage
+	useCase  publication.UseCase
+	uploader publication.Uploader
 }
 
-func NewHandler(useCase publication.UseCase, fileStorage *filestorage.FileStorage) *Handler {
+func NewHandler(useCase publication.UseCase, uploader publication.Uploader) *Handler {
 	return &Handler{
 		useCase:     useCase,
-		fileStorage: fileStorage,
+		uploader: uploader,
 	}
 }
 
@@ -199,12 +198,7 @@ func (h *Handler) Upload(c *gin.Context) {
 		return
 	}
 
-	url, err := h.fileStorage.Upload(c.Request.Context(), filestorage.UploadInput{
-		File:        file,
-		Name:        fileHeader.Filename,
-		Size:        fileHeader.Size,
-		ContentType: fileType,
-	})
+	url, err := h.uploader.Upload(c.Request.Context(), file, fileHeader.Size, fileType)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &uploadResponse{
 			Status: "error",

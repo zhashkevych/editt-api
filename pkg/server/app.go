@@ -9,6 +9,7 @@ import (
 	"edittapi/pkg/metrics/collector"
 	metricsmgo "edittapi/pkg/metrics/repository/mongo"
 	metricsuc "edittapi/pkg/metrics/usecase"
+	"edittapi/pkg/publication/upload"
 	"edittapi/pkg/publication/usecase"
 	"edittapi/sidecar/filestorage"
 	"github.com/gin-contrib/cors"
@@ -40,7 +41,8 @@ type App struct {
 	adminUseCase       admin.UseCase
 	metricsCollector   *collector.MetricsCollector
 
-	fileStorage  *filestorage.FileStorage
+	fileStorage   *filestorage.FileStorage
+	imageUploader publication.Uploader
 }
 
 func NewApp(accessKey, secretKey string) *App {
@@ -67,6 +69,7 @@ func NewApp(accessKey, secretKey string) *App {
 		adminUseCase:       adminUseCase,
 		metricsCollector:   metricsCollector,
 		fileStorage:        fileStorage,
+		imageUploader:      upload.NewUploader(fileStorage),
 	}
 }
 
@@ -108,7 +111,7 @@ func (a *App) Run(port string) error {
 
 	// API endpoints
 	api := router.Group("/api")
-	pubhttp.RegisterHTTPEndpoints(api, a.publicationUseCase, a.fileStorage)
+	pubhttp.RegisterHTTPEndpoints(api, a.publicationUseCase, a.imageUploader)
 
 	// Admin Panel Endpoints
 	admin := router.Group("/admin")

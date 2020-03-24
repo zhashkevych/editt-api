@@ -3,12 +3,11 @@ package http
 import (
 	"edittapi/pkg/publication"
 	"edittapi/pkg/publication/delivery/http/middleware"
-	"edittapi/sidecar/filestorage"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase publication.UseCase, fileStorage *filestorage.FileStorage) {
-	h := NewHandler(usecase, fileStorage)
+func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase publication.UseCase, uploader publication.Uploader) {
+	h := NewHandler(usecase, uploader)
 
 	viewer := middleware.NewViewer(usecase)
 

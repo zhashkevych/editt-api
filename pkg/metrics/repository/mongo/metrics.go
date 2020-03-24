@@ -45,7 +45,6 @@ func (r MetricsRepository) GetMetrics(ctx context.Context, timeFrom time.Time) (
 	opts := options.Find()
 	opts.SetSort(bson.M{"_id": -1})
 
-	//cur, err := r.db.Find(ctx, bson.M{"timestamp": bson.M{"$gte": timeFrom.Format(time.RFC3339)}})
 	cur, err := r.db.Find(ctx, bson.M{"timestamp": bson.M{"$gte": timeFrom}}, opts)
 	if err != nil {
 		log.Errorf("Publication Repo: error occured while finding popular publications: %s", err.Error())
