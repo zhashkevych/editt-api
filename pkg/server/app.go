@@ -55,8 +55,8 @@ func NewApp(accessKey, secretKey string) *App {
 
 	adminUseCase := adminuc.NewAdminUseCase(metricsUseCase, publicationUseCase)
 
-	// Initiate a client using DigitalOcean Spaces.
-	client, err := minio.New(viper.GetString("storage.endpoint"), accessKey, secretKey, true)
+	// Initiate an S3 compatible client
+	client, err := minio.New(viper.GetString("storage.endpoint"), accessKey, secretKey, false)
 	if err != nil {
 		log.Fatal(err)
 	}

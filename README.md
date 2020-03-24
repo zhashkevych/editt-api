@@ -6,7 +6,23 @@
 
 ## Run Project
 
+### Local
+
+Due to localstack usage, ```awscli``` tool is needed for local development.
+
+Install it on mac via ```brew install awscli```
+
+Before running local project, run:
+```aws configure``` and set up AWS keys. Don't forget to add them to `docker-compose.yml`
+Then, set up bucket using folowing commands:
+
+`aws --endpoint-url=http://localhost:4572 s3 mb s3://editt-image-storage`
+
+`aws --endpoint-url=http://localhost:4572 s3api put-bucket-acl --bucket editt-image-storage --acl public-read` 
+
 Use ```make run-local``` to build and run docker containers with application itself and mongodb instance
+
+### Production
 
 Use ```make run-deploy``` on production environment to run API container
 

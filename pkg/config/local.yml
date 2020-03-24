@@ -3,3 +3,6 @@ mongo:
 
 metrics:
   interval: 1 #minutes
+
+storage:
+  endpoint: "localstack:4572"
