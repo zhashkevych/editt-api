@@ -13,6 +13,15 @@ import (
 const (
 	publicationTypePopular = "popular"
 	publicationTypeLatest  = "latest"
+
+	MAX_UPLOAD_SIZE = 1 << 20 * 5 // 5 megabytes
+)
+
+var (
+	IMAGE_TYPES = map[string]interface{}{
+		"image/jpeg": nil,
+		"image/png": nil,
+	}
 )
 
 type Handler struct {
@@ -155,6 +164,9 @@ type uploadResponse struct {
 }
 
 func (h *Handler) Upload(c *gin.Context) {
+	// Limit Upload File Size
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, MAX_UPLOAD_SIZE)
+
 	fileHeader, err := c.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &uploadResponse{
@@ -177,6 +189,15 @@ func (h *Handler) Upload(c *gin.Context) {
 	buffer := make([]byte, fileHeader.Size)
 	file.Read(buffer)
 	fileType := http.DetectContentType(buffer)
+
+	// Validate File Type
+	if _, ex := IMAGE_TYPES[fileType]; !ex {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    "file type is not supported",
+		})
+		return
+	}
 
 	url, err := h.fileStorage.Upload(c.Request.Context(), filestorage.UploadInput{
 		File:        file,
