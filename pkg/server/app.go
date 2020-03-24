@@ -9,13 +9,15 @@ import (
 	"edittapi/pkg/metrics/collector"
 	metricsmgo "edittapi/pkg/metrics/repository/mongo"
 	metricsuc "edittapi/pkg/metrics/usecase"
+	"edittapi/pkg/publication/usecase"
+	"edittapi/sidecar/filestorage"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/minio/minio-go"
+	"github.com/spf13/viper"
 	limit "github.com/yangxikun/gin-limit-by-key"
 	"github.com/zhashkevych/scheduler"
 	"golang.org/x/time/rate"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -29,7 +31,6 @@ import (
 	"edittapi/pkg/publication"
 	pubhttp "edittapi/pkg/publication/delivery/http"
 	pubmongo "edittapi/pkg/publication/repository/mongo"
-	pubuc "edittapi/pkg/publication/usecase"
 )
 
 type App struct {
@@ -38,13 +39,15 @@ type App struct {
 	publicationUseCase publication.UseCase
 	adminUseCase       admin.UseCase
 	metricsCollector   *collector.MetricsCollector
+
+	fileStorage  *filestorage.FileStorage
 }
 
-func NewApp() *App {
+func NewApp(accessKey, secretKey string) *App {
 	db := initDB()
 
 	publicationRepo := pubmongo.NewPublicationRepository(db, viper.GetString("mongo.publications_collection"))
-	publicationUseCase := pubuc.NewPublicationUseCase(publicationRepo)
+	publicationUseCase := usecase.NewPublicationUseCase(publicationRepo)
 
 	metricsRepo := metricsmgo.NewMetricsRepository(db, viper.GetString("mongo.metrics_collection"))
 	metricsUseCase := metricsuc.NewMetricsUseCase(metricsRepo, publicationUseCase)
@@ -52,10 +55,18 @@ func NewApp() *App {
 
 	adminUseCase := adminuc.NewAdminUseCase(metricsUseCase, publicationUseCase)
 
+	// Initiate a client using DigitalOcean Spaces.
+	client, err := minio.New(viper.GetString("storage.endpoint"), accessKey, secretKey, true)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fileStorage := filestorage.NewFileStorage(client, viper.GetString("storage.bucket"), viper.GetString("storage.endpoint"))
+
 	return &App{
 		publicationUseCase: publicationUseCase,
 		adminUseCase:       adminUseCase,
 		metricsCollector:   metricsCollector,
+		fileStorage:        fileStorage,
 	}
 }
 
@@ -97,7 +108,7 @@ func (a *App) Run(port string) error {
 
 	// API endpoints
 	api := router.Group("/api")
-	pubhttp.RegisterHTTPEndpoints(api, a.publicationUseCase)
+	pubhttp.RegisterHTTPEndpoints(api, a.publicationUseCase, a.fileStorage)
 
 	// Admin Panel Endpoints
 	admin := router.Group("/admin")

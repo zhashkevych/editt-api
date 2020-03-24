@@ -27,7 +27,9 @@ func main() {
 		log.Fatalf("%s", err.Error())
 	}
 
-	app := server.NewApp()
+	accessKey := os.Getenv("ACCESS_KEY")
+	secretKey := os.Getenv("SECRET_KEY")
+	app := server.NewApp(accessKey, secretKey)
 
 	if err := app.Run(viper.GetString("port")); err != nil {
 		log.Fatalf("%s", err.Error())

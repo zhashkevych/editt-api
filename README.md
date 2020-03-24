@@ -164,3 +164,25 @@ Retrieves all platform publications
 ### DELETE /admin/publications/:id
 
 Used to remove publication by ID
+
+### POST /upload
+
+Used to upload image for publication
+
+##### Input should be of type "multipart/form-data" with "file" as key to image: 
+
+##### Example Response (Status 200 OK): 
+```
+{
+    "status": "ok",
+    "url": "https://editt-image-storage.fra1.digitaloceanspaces.com/terminal.png"
+}
+```
+
+##### Example Response (Status 400 Bad Request): 
+```
+{
+    "status": "error",
+    "url": "failed to open image"
+}
+```

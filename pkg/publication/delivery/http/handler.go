@@ -3,6 +3,7 @@ package http
 import (
 	"edittapi/pkg/models"
 	"edittapi/pkg/publication"
+	"edittapi/sidecar/filestorage"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -15,12 +16,14 @@ const (
 )
 
 type Handler struct {
-	useCase publication.UseCase
+	useCase     publication.UseCase
+	fileStorage *filestorage.FileStorage
 }
 
-func NewHandler(useCase publication.UseCase) *Handler {
+func NewHandler(useCase publication.UseCase, fileStorage *filestorage.FileStorage) *Handler {
 	return &Handler{
-		useCase: useCase,
+		useCase:     useCase,
+		fileStorage: fileStorage,
 	}
 }
 
@@ -143,4 +146,54 @@ func (h *Handler) IncrementReactions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, nil)
+}
+
+type uploadResponse struct {
+	Status string `json:"status"`
+	Msg    string `json:"message,omitempty"`
+	URL    string `json:"url,omitempty"`
+}
+
+func (h *Handler) Upload(c *gin.Context) {
+	fileHeader, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+
+	file, err := fileHeader.Open()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+	defer file.Close()
+
+	buffer := make([]byte, fileHeader.Size)
+	file.Read(buffer)
+	fileType := http.DetectContentType(buffer)
+
+	url, err := h.fileStorage.Upload(c.Request.Context(), filestorage.UploadInput{
+		File:        file,
+		Name:        fileHeader.Filename,
+		Size:        fileHeader.Size,
+		ContentType: fileType,
+	})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &uploadResponse{
+			Status: "error",
+			Msg:    err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &uploadResponse{
+		Status: "ok",
+		URL:    url,
+	})
 }

@@ -14,3 +14,8 @@ mongo:
 
 metrics:
   interval: 10 #minutes
+
+# S3 compatible DigitalOcean object storage
+storage:
+  endpoint: "fra1.digitaloceanspaces.com"
+  bucket: "editt-image-storage"

@@ -4,4 +4,4 @@ if [ "$(docker ps -q -f name=editt-api)" ]; then
     fi
 fi
 
-docker run -e HOST --rm -d --publish 8000:8000 --network editt --name editt-api editt:0.1
+docker run -e HOST -e ACCESS_KEY -e SECRET_KEY --rm -d --publish 8000:8000 --network editt --name editt-api editt:0.1
