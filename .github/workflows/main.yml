@@ -19,4 +19,6 @@ jobs:
         script: |
             cd ${{ secrets.PROJECTPATH }}
             git checkout master && git pull origin master
+            export ACCESS_KEY=${{ secrets.ACCESS_KEY }}
+            export SECRET_KEY=${{ secrets.SECRET_KEY }}
             make run-deploy
