@@ -15,11 +15,6 @@ func init() {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.WarnLevel)
-
-
-	if os.Getenv("HOST") == ENV_PROD {
-		gin.SetMode(gin.ReleaseMode)
-	}
 }
 
 func main() {
@@ -27,9 +22,14 @@ func main() {
 		log.Fatalf("%s", err.Error())
 	}
 
+	env := os.Getenv("HOST")
+	if env == ENV_PROD {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	accessKey := os.Getenv("ACCESS_KEY")
 	secretKey := os.Getenv("SECRET_KEY")
-	app := server.NewApp(accessKey, secretKey)
+	app := server.NewApp(accessKey, secretKey, env)
 
 	if err := app.Run(viper.GetString("port")); err != nil {
 		log.Fatalf("%s", err.Error())

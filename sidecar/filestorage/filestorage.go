@@ -6,7 +6,10 @@ import (
 	"github.com/minio/minio-go"
 	log "github.com/sirupsen/logrus"
 	"io"
+	"strings"
 )
+
+const ENV_PROD = "prod"
 
 type UploadInput struct {
 	File        io.Reader
@@ -19,13 +22,15 @@ type FileStorage struct {
 	client   *minio.Client
 	bucket   string
 	endpoint string
+	env      string
 }
 
-func NewFileStorage(client *minio.Client, bucket, endpoint string) *FileStorage {
+func NewFileStorage(client *minio.Client, bucket, endpoint, env string) *FileStorage {
 	return &FileStorage{
 		client:   client,
 		bucket:   bucket,
 		endpoint: endpoint,
+		env:      env,
 	}
 }
 
@@ -46,5 +51,12 @@ func (fs *FileStorage) Upload(ctx context.Context, input UploadInput) (string, e
 }
 
 func (fs *FileStorage) generateFileURL(fileName string) string {
-	return fmt.Sprintf("https://%s.%s/%s", fs.bucket, fs.endpoint, fileName)
+	// DigitalOcean Spaces link format
+	if fs.env == ENV_PROD {
+		return fmt.Sprintf("https://%s.%s/%s", fs.bucket, fs.endpoint, fileName)
+	}
+
+	// localstack S3 link format
+	endpoint := strings.Replace(fs.endpoint, "localstack", "localhost", -1)
+	return fmt.Sprintf("http://%s/%s/%s", endpoint, fs.bucket, fileName)
 }

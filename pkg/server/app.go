@@ -45,7 +45,7 @@ type App struct {
 	imageUploader publication.Uploader
 }
 
-func NewApp(accessKey, secretKey string) *App {
+func NewApp(accessKey, secretKey, env string) *App {
 	db := initDB()
 
 	publicationRepo := pubmongo.NewPublicationRepository(db, viper.GetString("mongo.publications_collection"))
@@ -62,7 +62,7 @@ func NewApp(accessKey, secretKey string) *App {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fileStorage := filestorage.NewFileStorage(client, viper.GetString("storage.bucket"), viper.GetString("storage.endpoint"))
+	fileStorage := filestorage.NewFileStorage(client, viper.GetString("storage.bucket"), viper.GetString("storage.endpoint"), env)
 
 	return &App{
 		publicationUseCase: publicationUseCase,
