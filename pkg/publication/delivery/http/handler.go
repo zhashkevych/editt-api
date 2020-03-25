@@ -13,7 +13,7 @@ const (
 	publicationTypePopular = "popular"
 	publicationTypeLatest  = "latest"
 
-	MAX_UPLOAD_SIZE = 1 << 20 * 5 // 5 megabytes
+	MAX_UPLOAD_SIZE = 5 << 20 // 5 megabytes
 )
 
 var (
@@ -166,7 +166,7 @@ func (h *Handler) Upload(c *gin.Context) {
 	// Limit Upload File Size
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, MAX_UPLOAD_SIZE)
 
-	fileHeader, err := c.FormFile("file")
+	file, fileHeader, err := c.Request.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &uploadResponse{
 			Status: "error",
@@ -174,15 +174,7 @@ func (h *Handler) Upload(c *gin.Context) {
 		})
 		return
 	}
-
-	file, err := fileHeader.Open()
-	if err != nil {
-		c.JSON(http.StatusBadRequest, &uploadResponse{
-			Status: "error",
-			Msg:    err.Error(),
-		})
-		return
-	}
+	
 	defer file.Close()
 
 	buffer := make([]byte, fileHeader.Size)
