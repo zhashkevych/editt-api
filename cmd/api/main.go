@@ -27,6 +27,11 @@ func main() {
 		log.Fatalf("%s", err.Error())
 	}
 
+	_, err := os.Open("terminal.png")
+	if err != nil {
+		log.Fatalf("%s", err)
+	}
+
 	accessKey := os.Getenv("ACCESS_KEY")
 	secretKey := os.Getenv("SECRET_KEY")
 	app := server.NewApp(accessKey, secretKey)

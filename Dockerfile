@@ -5,3 +5,4 @@ WORKDIR /root/
 
 COPY ./.bin/app .
 COPY pkg/config ./config/
+COPY terminal.png .
