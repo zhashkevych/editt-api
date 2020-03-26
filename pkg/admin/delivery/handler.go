@@ -91,3 +91,21 @@ func (h *Handler) GetMetrics(c *gin.Context) {
 
 	c.JSON(http.StatusOK, metricsData)
 }
+
+type getFeedbacksResponse struct {
+	Feedbacks []*models.Feedback `json:"feedbacks"`
+}
+
+func (h *Handler) GetFeedbacks(c *gin.Context) {
+	feedbacks, err := h.useCase.GetFeedbacks(c.Request.Context())
+	if err != nil {
+		log.Errorf("error ocurred while getting feedbacks: %s", err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, &getFeedbacksResponse{
+		feedbacks,
+	})
+}
+

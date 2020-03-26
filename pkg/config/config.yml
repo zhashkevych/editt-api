@@ -11,6 +11,7 @@ mongo:
   name: "editt"
   publications_collection: "publications"
   metrics_collection: "metrics"
+  feedback_collection: "feedback"
 
 metrics:
   interval: 10 #minutes

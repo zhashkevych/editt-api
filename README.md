@@ -129,6 +129,18 @@ Used to upload image for publication
 }
 ```
 
+### POST /api/feedback
+
+Used to save feedback
+
+##### Example Input: 
+```
+{
+	"score": 10,
+	"features": [1, 2]
+}
+```
+
 ## Admin's Panel API:
 
 ### POST /admin/sign-in
@@ -168,6 +180,38 @@ Used to retrieve metrics
         }
     ],
     "publications_count": 3
+}
+```
+
+### GET /admin/feedback
+
+Used to retrieve metrics
+
+##### Example Response: 
+```
+{
+    "feedbacks": [
+        {
+            "score": 10,
+            "features": [
+                0
+            ]
+        },
+        {
+            "score": 10,
+            "features": [
+                0,
+                1
+            ]
+        },
+        {
+            "score": 10,
+            "features": [
+                1,
+                2
+            ]
+        }
+    ]
 }
 ```
 

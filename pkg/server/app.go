@@ -6,6 +6,10 @@ import (
 	adminhttp "edittapi/pkg/admin/delivery"
 	"edittapi/pkg/admin/delivery/auth"
 	adminuc "edittapi/pkg/admin/usecase"
+	"edittapi/pkg/feedback"
+	fbhttp "edittapi/pkg/feedback/delivery/http"
+	fbmongo "edittapi/pkg/feedback/repo/mongo"
+	fbuc "edittapi/pkg/feedback/usecase"
 	"edittapi/pkg/metrics/collector"
 	metricsmgo "edittapi/pkg/metrics/repository/mongo"
 	metricsuc "edittapi/pkg/metrics/usecase"
@@ -43,6 +47,8 @@ type App struct {
 
 	fileStorage   *filestorage.FileStorage
 	imageUploader publication.Uploader
+
+	feedbackUseCase feedback.UseCase
 }
 
 func NewApp(accessKey, secretKey, env string) *App {
@@ -55,7 +61,10 @@ func NewApp(accessKey, secretKey, env string) *App {
 	metricsUseCase := metricsuc.NewMetricsUseCase(metricsRepo, publicationUseCase)
 	metricsCollector := collector.NewMetricsCollector(metricsUseCase)
 
-	adminUseCase := adminuc.NewAdminUseCase(metricsUseCase, publicationUseCase)
+	feedbackRepo := fbmongo.NewFeedbackRepository(db, viper.GetString("mongo.feedback_collection"))
+	feedbackUseCase := fbuc.NewFeedbackUseCase(feedbackRepo)
+
+	adminUseCase := adminuc.NewAdminUseCase(metricsUseCase, publicationUseCase, feedbackUseCase)
 
 	// Initiate an S3 compatible client
 	client, err := minio.New(viper.GetString("storage.endpoint"), accessKey, secretKey, false)
@@ -70,6 +79,7 @@ func NewApp(accessKey, secretKey, env string) *App {
 		metricsCollector:   metricsCollector,
 		fileStorage:        fileStorage,
 		imageUploader:      upload.NewUploader(fileStorage),
+		feedbackUseCase:    feedbackUseCase,
 	}
 }
 
@@ -112,6 +122,7 @@ func (a *App) Run(port string) error {
 	// API endpoints
 	api := router.Group("/api")
 	pubhttp.RegisterHTTPEndpoints(api, a.publicationUseCase, a.imageUploader)
+	fbhttp.RegisterHTTPHandlers(api, a.feedbackUseCase)
 
 	// Admin Panel Endpoints
 	admin := router.Group("/admin")

@@ -13,6 +13,8 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, usecase admin.UseCase, autho
 
 	router.GET("/metrics", authorizer.Middleware, h.GetMetrics)
 
+	router.GET("/feedback", authorizer.Middleware, h.GetFeedbacks)
+
 	publications := router.Group("/publications", authorizer.Middleware)
 	{
 		publications.GET("", h.GetPublications)
