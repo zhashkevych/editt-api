@@ -4,6 +4,9 @@ build-local:
 run-local: build-local
 	docker-compose up --remove-orphans --build server
 
+run-debug: build-local
+	docker-compose up --remove-orphans --build server-debug
+
 build-deploy:
 	docker image build -t editt:0.1 -f ./deploy/Dockerfile .
 

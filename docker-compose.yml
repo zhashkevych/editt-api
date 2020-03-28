@@ -16,6 +16,21 @@ services:
       - mongodb
       - localstack
 
+  server-debug:
+    image: edittapi
+    container_name: "edittapi"
+    environment:
+      - ACCESS_KEY=qwe
+      - SECRET_KEY=qwe
+    build: ./
+    command: dlv --listen=:2345 --headless=true --api-version=2 --accept-multiclient exec ./app
+    ports:
+      - 8000:8000
+      - 2345:2345
+    depends_on:
+      - mongodb
+      - localstack
+
   mongodb:
     image: mongo:latest
     container_name: "mongo"
