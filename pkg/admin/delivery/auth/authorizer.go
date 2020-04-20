@@ -49,7 +49,7 @@ func (a *Authorizer) GenerateToken(username, password string) (string, error) {
 		return token.SignedString(a.signingKey)
 	}
 
-	return "", nil
+	return "", ErrInvalidCredentials
 }
 
 func (a *Authorizer) ParseToken(accessToken string) error {

@@ -1,3 +1,5 @@
+.PHONY: docs
+
 build-local:
 	go mod download && CGO_ENABLED=0 GOOS=linux go build -o ./.bin/app ./cmd/api/main.go
 
@@ -12,3 +14,6 @@ run-container:
 	./run-container.sh
 
 run-deploy: build-deploy run-container
+
+docs:
+	swag init -g pkg/server/app.go

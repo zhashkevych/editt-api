@@ -1,0 +1,422 @@
+basePath: /
+definitions:
+  delivery.getFeedbacksResponse:
+    properties:
+      feedbacks:
+        items:
+          $ref: '#/definitions/models.Feedback'
+        type: array
+    type: object
+  delivery.getPublicationsResponse:
+    properties:
+      publications:
+        items:
+          $ref: '#/definitions/models.Publication'
+        type: array
+    type: object
+  delivery.signInInput:
+    properties:
+      password:
+        example: password
+        type: string
+      username:
+        example: editt
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  delivery.signInResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  http.getPublicationsResponse:
+    properties:
+      publications:
+        items:
+          $ref: '#/definitions/models.Publication'
+        type: array
+    type: object
+  http.publishInput:
+    properties:
+      author:
+        example: Вася
+        type: string
+      body:
+        example: Очень крутая публикация
+        type: string
+      imageLink:
+        example: https://images.unsplash.com/photo-1571997804104-011c8c1d19b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80
+        type: string
+      tags:
+        example:
+        - финансы
+        - бюджет
+        items:
+          type: string
+        type: array
+      title:
+        example: Про личные финансы
+        type: string
+    required:
+    - author
+    - body
+    - imageLink
+    - tags
+    - title
+    type: object
+  http.uploadResponse:
+    properties:
+      message:
+        type: string
+      status:
+        example: ok
+        type: string
+      url:
+        example: https://editt-image-storage.fra1.digitaloceanspaces.com/image.png
+        type: string
+    type: object
+  models.Feedback:
+    properties:
+      features:
+        items:
+          enum:
+          - 1
+          - 2
+          type: integer
+        type: array
+      score:
+        example: 10
+        type: integer
+    type: object
+  models.Metrics:
+    properties:
+      timestamp:
+        type: string
+      unique_visitors_count:
+        type: integer
+    type: object
+  models.MetricsAggregated:
+    properties:
+      last24:
+        items:
+          $ref: '#/definitions/models.Metrics'
+        type: array
+      publications_count:
+        type: integer
+    type: object
+  models.Publication:
+    properties:
+      author:
+        example: Вася
+        type: string
+      body:
+        example: Очень крутая публикация
+        type: string
+      id:
+        example: 507f1f77bcf86cd799439011
+        type: string
+      imageLink:
+        example: https://images.unsplash.com/photo-1571997804104-011c8c1d19b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80
+        type: string
+      publishedAt:
+        type: string
+      reactions:
+        example: 35
+        type: integer
+      readingTime:
+        example: 5
+        type: integer
+      tags:
+        example:
+        - финансы
+        - бюджет
+        items:
+          type: string
+        type: array
+      title:
+        example: Про личные финансы
+        type: string
+      views:
+        example: 586
+        type: integer
+    type: object
+info:
+  contact: {}
+  description: editt back-end API
+  license: {}
+  title: editt API
+  version: "0.1"
+paths:
+  /admin/feedback:
+    get:
+      consumes:
+      - application/json
+      description: GetFeedbacks
+      parameters:
+      - description: Bearer <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.getFeedbacksResponse'
+        "400": {}
+        "401": {}
+        "500": {}
+      security:
+      - ApiKeyAuth: []
+      summary: GetFeedbacks
+      tags:
+      - admin
+  /admin/metrics:
+    get:
+      consumes:
+      - application/json
+      description: GetMetrics
+      parameters:
+      - description: Bearer <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MetricsAggregated'
+        "400": {}
+        "401": {}
+        "500": {}
+      security:
+      - ApiKeyAuth: []
+      summary: GetMetrics
+      tags:
+      - admin
+  /admin/publications:
+    get:
+      consumes:
+      - application/json
+      description: GetPublications
+      parameters:
+      - description: Bearer <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.getPublicationsResponse'
+        "400": {}
+        "500": {}
+      security:
+      - ApiKeyAuth: []
+      summary: GetPublications
+      tags:
+      - admin
+  /admin/publications/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: RemovePublication
+      parameters:
+      - description: Bearer <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Publication ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400": {}
+        "401": {}
+        "500": {}
+      security:
+      - ApiKeyAuth: []
+      summary: RemovePublication
+      tags:
+      - admin
+  /admin/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Sign In
+      parameters:
+      - description: Sign In Input
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/delivery.signInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.signInResponse'
+        "400": {}
+        "401": {}
+        "500": {}
+      summary: Sign In
+      tags:
+      - admin
+  /api/feedback:
+    post:
+      consumes:
+      - application/json
+      description: Create Feedback
+      parameters:
+      - description: Feedback Input
+        in: body
+        name: feedback
+        required: true
+        schema:
+          $ref: '#/definitions/models.Feedback'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+        "400": {}
+        "500": {}
+      summary: Create Feedback
+      tags:
+      - feedback
+  /api/publications:
+    get:
+      consumes:
+      - application/json
+      description: Gets all publications
+      parameters:
+      - description: Publications type filter
+        in: query
+        name: type
+        type: string
+      - description: Publications count limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.getPublicationsResponse'
+        "400": {}
+        "500": {}
+      summary: Gets all publications
+      tags:
+      - publications
+    post:
+      consumes:
+      - application/json
+      description: Creates new publication
+      parameters:
+      - description: Create Publication
+        in: body
+        name: publication
+        required: true
+        schema:
+          $ref: '#/definitions/http.publishInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.getPublicationsResponse'
+        "400": {}
+        "500": {}
+      summary: Creates new publication
+      tags:
+      - publications
+  /api/publications/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Gets publication by id
+      parameters:
+      - description: Publication ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Publication'
+        "400": {}
+        "500": {}
+      summary: Gets publication by id
+      tags:
+      - publications
+  /api/publications/{id}/reaction:
+    post:
+      consumes:
+      - application/json
+      description: Increments reactions count for publication
+      parameters:
+      - description: Publication ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "500": {}
+      summary: Increments reactions count for publication
+      tags:
+      - publications
+  /api/upload:
+    post:
+      consumes:
+      - application/json
+      description: Upload file for publication
+      parameters:
+      - description: File input
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.uploadResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.uploadResponse'
+      summary: Upload file for publication
+      tags:
+      - publications
+swagger: "2.0"

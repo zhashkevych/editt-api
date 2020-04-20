@@ -20,9 +20,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/minio/minio-go"
 	"github.com/spf13/viper"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	swaggerFiles "github.com/swaggo/files"
 	limit "github.com/yangxikun/gin-limit-by-key"
 	"github.com/zhashkevych/scheduler"
 	"golang.org/x/time/rate"
+
+	_ "edittapi/docs"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -37,6 +41,14 @@ import (
 	pubhttp "edittapi/pkg/publication/delivery/http"
 	pubmongo "edittapi/pkg/publication/repository/mongo"
 )
+
+// *** SWAGGER COMMENTS ***
+
+// @title editt API
+// @version 0.1
+// @description editt back-end API
+
+// @BasePath /
 
 type App struct {
 	httpServer *http.Server
@@ -111,6 +123,7 @@ func (a *App) Run(port string) error {
 		c.AbortWithStatus(429)
 	})
 
+	// HTTP Routes
 	router.Use(
 		cors.New(corsConfig),
 		gin.Recovery(),
@@ -118,6 +131,9 @@ func (a *App) Run(port string) error {
 		rateLimiterMiddleware,
 		a.metricsCollector.Middleware,
 	)
+
+	// swagger router
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// API endpoints
 	api := router.Group("/api")

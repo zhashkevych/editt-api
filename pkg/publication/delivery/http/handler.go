@@ -36,11 +36,11 @@ func NewHandler(useCase publication.UseCase, uploader publication.Uploader) *Han
 }
 
 type publishInput struct {
-	Author    string   `json:"author" binding:"required,min=3,max=25"`
-	Title     string   `json:"title" binding:"required,min=3,max=100"`
-	Tags      []string `json:"tags" binding:"required,min=1,max=3"`
-	Body      string   `json:"body" binding:"required"`
-	ImageLink string   `json:"imageLink" binding:"required"`
+	Author    string   `json:"author" binding:"required,min=3,max=25" example:"Вася"`
+	Title     string   `json:"title" binding:"required,min=3,max=100" example:"Про личные финансы"`
+	Tags      []string `json:"tags" binding:"required,min=1,max=3" example:"финансы,бюджет"`
+	Body      string   `json:"body" binding:"required" example:"Очень крутая публикация"`
+	ImageLink string   `json:"imageLink" binding:"required" example:"https://images.unsplash.com/photo-1571997804104-011c8c1d19b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"`
 }
 
 func toPublicationModel(inp *publishInput) models.Publication {
@@ -53,6 +53,17 @@ func toPublicationModel(inp *publishInput) models.Publication {
 	}
 }
 
+// Publish godoc
+// @Summary Creates new publication
+// @Description Creates new publication
+// @Tags publications
+// @Accept json
+// @Produce json
+// @Param publication body publishInput true "Create Publication"
+// @Success 200 {object} getPublicationsResponse
+// @Failure 400
+// @Failure 500
+// @Router /api/publications [post]
 func (h *Handler) Publish(c *gin.Context) {
 	inp := new(publishInput)
 	if err := c.BindJSON(inp); err != nil {
@@ -81,6 +92,18 @@ type getPublicationsResponse struct {
 	Publications []*models.Publication `json:"publications"`
 }
 
+// GetPublications godoc
+// @Summary Gets all publications
+// @Description Gets all publications
+// @Tags publications
+// @Accept json
+// @Produce json
+// @Param type query string false "Publications type filter"
+// @Param limit query int false "Publications count limit"
+// @Success 200 {object} getPublicationsResponse
+// @Failure 400
+// @Failure 500
+// @Router /api/publications [get]
 func (h *Handler) GetPublications(c *gin.Context) {
 	limit := c.DefaultQuery("limit", "0")
 	tpe := c.DefaultQuery("type", publicationTypePopular)
@@ -114,6 +137,17 @@ func (h *Handler) GetPublications(c *gin.Context) {
 	})
 }
 
+// GetById godoc
+// @Summary Gets publication by id
+// @Description Gets publication by id
+// @Tags publications
+// @Accept json
+// @Produce json
+// @Param id path string true "Publication ID"
+// @Success 200 {object} models.Publication
+// @Failure 400
+// @Failure 500
+// @Router /api/publications/{id} [get]
 func (h *Handler) GetById(c *gin.Context) {
 	id := c.Param("id")
 
@@ -132,18 +166,16 @@ func (h *Handler) GetById(c *gin.Context) {
 	c.JSON(http.StatusOK, p)
 }
 
-func (h *Handler) IncrementViews(c *gin.Context) {
-	id := c.Param("id")
-
-	if err := h.useCase.IncrementViews(c.Request.Context(), id); err != nil {
-		log.Errorf("error occured while increasing views: %s", err.Error())
-		c.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	c.JSON(http.StatusOK, nil)
-}
-
+// IncrementReactions godoc
+// @Summary Increments reactions count for publication
+// @Description Increments reactions count for publication
+// @Tags publications
+// @Accept json
+// @Produce json
+// @Param id path string true "Publication ID"
+// @Success 200 {string} string "ok"
+// @Failure 500
+// @Router /api/publications/{id}/reaction [post]
 func (h *Handler) IncrementReactions(c *gin.Context) {
 	id := c.Param("id")
 
@@ -153,15 +185,25 @@ func (h *Handler) IncrementReactions(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, nil)
+	c.String(http.StatusOK, "ok")
 }
 
 type uploadResponse struct {
-	Status string `json:"status"`
+	Status string `json:"status" example:"ok"`
 	Msg    string `json:"message,omitempty"`
-	URL    string `json:"url,omitempty"`
+	URL    string `json:"url,omitempty" example:"https://editt-image-storage.fra1.digitaloceanspaces.com/image.png"`
 }
 
+// Upload godoc
+// @Summary Upload file for publication
+// @Description Upload file for publication
+// @Tags publications
+// @Accept json
+// @Produce json
+// @Param file formData file true "File input"
+// @Success 200 {object} uploadResponse
+// @Failure 400 {object} uploadResponse
+// @Router /api/upload [post]
 func (h *Handler) Upload(c *gin.Context) {
 	// Limit Upload File Size
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, MAX_UPLOAD_SIZE)
