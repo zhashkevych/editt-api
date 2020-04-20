@@ -28,6 +28,9 @@ Use ```make run-deploy``` on production environment to run API container
 
 ## Client's API:
 
+### Access Swagger UI at /swagger/index.html
+Endpoints described below may be outdated
+
 ### GET /api/publications
 
 Retrieves all publications hosted on platform:
