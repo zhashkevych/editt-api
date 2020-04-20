@@ -3,10 +3,14 @@ package http
 import (
 	"bytes"
 	"edittapi/pkg/models"
+	"edittapi/pkg/publication/upload"
 	"edittapi/pkg/publication/usecase"
 	"encoding/json"
+	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	//"os"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -23,8 +27,9 @@ func TestPublish(t *testing.T) {
 	group := r.Group("/api")
 
 	uc := new(usecase.PublicationUseCaseMock)
+	uploader := new(upload.UploaderMock)
 
-	RegisterHTTPEndpoints(group, uc)
+	RegisterHTTPEndpoints(group, uc, uploader)
 
 	tests := []*publishTest{
 		{ // Ok
@@ -100,8 +105,9 @@ func TestGetPublications(t *testing.T) {
 	group := r.Group("/api")
 
 	uc := new(usecase.PublicationUseCaseMock)
+	uploader := new(upload.UploaderMock)
 
-	RegisterHTTPEndpoints(group, uc)
+	RegisterHTTPEndpoints(group, uc, uploader)
 
 	// Type = popular
 	results := []*models.Publication{
@@ -223,8 +229,9 @@ func TestGetById(t *testing.T) {
 	group := r.Group("/api")
 
 	uc := new(usecase.PublicationUseCaseMock)
+	uploader := new(upload.UploaderMock)
 
-	RegisterHTTPEndpoints(group, uc)
+	RegisterHTTPEndpoints(group, uc, uploader)
 
 	p := &models.Publication{
 		ID:          "5e6a03309ea43ef775bd247e",
@@ -250,4 +257,39 @@ func TestGetById(t *testing.T) {
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, string(expectedResponse), w.Body.String())
+}
+
+func TestUploadInvalidFile(t *testing.T) {
+	r := gin.Default()
+	group := r.Group("/api")
+
+	uc := new(usecase.PublicationUseCaseMock)
+	uploader := new(upload.UploaderMock)
+
+	RegisterHTTPEndpoints(group, uc, uploader)
+
+	file, err := ioutil.TempFile("", "testUpload.*.txt")
+	assert.NoError(t, err)
+
+	fileContents, err := ioutil.ReadAll(file)
+	assert.NoError(t, err)
+
+	fi, err := file.Stat()
+	assert.NoError(t, err)
+
+	file.Close()
+
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile("file", fi.Name())
+	assert.NoError(t, err)
+
+	_, err = part.Write(fileContents)
+	assert.NoError(t, err)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/api/upload", body)
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, 400, w.Code)
 }
