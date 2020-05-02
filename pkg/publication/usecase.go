@@ -6,7 +6,7 @@ import (
 )
 
 type UseCase interface {
-	Publish(ctx context.Context, publication models.Publication) error
+	Publish(ctx context.Context, publication models.Publication) (string, error)
 
 	GetPopularPublications(ctx context.Context, limit int64) ([]*models.Publication, error)
 	GetLatestPublications(ctx context.Context, limit int64) ([]*models.Publication, error)

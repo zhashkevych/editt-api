@@ -26,13 +26,13 @@ func NewPublicationUseCase(repo publication.Repository) *PublicationUseCase {
 	}
 }
 
-func (p PublicationUseCase) Publish(ctx context.Context, publication models.Publication) error {
+func (p PublicationUseCase) Publish(ctx context.Context, publication models.Publication) (string, error) {
 	publication.PublishedAt = time.Now()
 	publication.Body = p.policy.Sanitize(publication.Body)
 	publication.ReadingTime = estimateReadingTime(publication.Body)
 
 	if err := validateBodyLength(publication.Body); err != nil {
-		return err
+		return "", err
 	}
 
 	return p.repo.Create(ctx, publication)

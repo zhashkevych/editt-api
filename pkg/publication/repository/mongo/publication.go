@@ -35,16 +35,17 @@ func NewPublicationRepository(db *mongo.Database, collection string) *Publicatio
 	}
 }
 
-func (r PublicationRepository) Create(ctx context.Context, publication models.Publication) error {
+func (r PublicationRepository) Create(ctx context.Context, publication models.Publication) (string, error) {
 	model := toPublication(publication)
 
-	_, err := r.db.InsertOne(ctx, model)
+	res, err := r.db.InsertOne(ctx, model)
 	if err != nil {
 		log.Errorf("Publication Repo: error occured on inserting publication: %s", err.Error())
-		return err
+		return "", err
 	}
+	id := res.InsertedID.(primitive.ObjectID)
 
-	return nil
+	return id.Hex(), nil
 }
 
 func (r PublicationRepository) GetPopular(ctx context.Context, limit int64) ([]*models.Publication, error) {

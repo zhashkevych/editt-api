@@ -53,6 +53,10 @@ func toPublicationModel(inp *publishInput) models.Publication {
 	}
 }
 
+type publishResponse struct {
+	ID string `json:"id"`
+}
+
 // Publish godoc
 // @Summary Creates new publication
 // @Description Creates new publication
@@ -60,7 +64,7 @@ func toPublicationModel(inp *publishInput) models.Publication {
 // @Accept json
 // @Produce json
 // @Param publication body publishInput true "Create Publication"
-// @Success 200 {object} getPublicationsResponse
+// @Success 200 {object} publishResponse
 // @Failure 400
 // @Failure 500
 // @Router /api/publications [post]
@@ -74,7 +78,8 @@ func (h *Handler) Publish(c *gin.Context) {
 
 	p := toPublicationModel(inp)
 
-	if err := h.useCase.Publish(c.Request.Context(), p); err != nil {
+	id, err := h.useCase.Publish(c.Request.Context(), p)
+	if err != nil {
 		if err == publication.ErrWordsLimitExceeded {
 			log.Errorf("failed to publish: %s", err.Error())
 			c.AbortWithStatus(http.StatusBadRequest)
@@ -85,7 +90,7 @@ func (h *Handler) Publish(c *gin.Context) {
 		return
 	}
 
-	c.Status(http.StatusOK)
+	c.JSON(http.StatusOK, publishResponse{ID: id})
 }
 
 type getPublicationsResponse struct {

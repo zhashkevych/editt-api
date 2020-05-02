@@ -11,10 +11,10 @@ type PublicationUseCaseMock struct {
 	mock.Mock
 }
 
-func (p *PublicationUseCaseMock) Publish(ctx context.Context, publication models.Publication) error {
+func (p *PublicationUseCaseMock) Publish(ctx context.Context, publication models.Publication) (string, error) {
 	args := p.Called(publication)
 
-	return args.Error(0)
+	return args.Get(0).(string), args.Error(1)
 }
 
 func (p *PublicationUseCaseMock) GetPopularPublications(ctx context.Context, limit int64) ([]*models.Publication, error) {
